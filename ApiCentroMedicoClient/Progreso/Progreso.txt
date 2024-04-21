@@ -1,0 +1,16 @@
+﻿====================
+===== Progreso =====
+====================
+
+Fecha : 21/04/2024
+
+1. Empezamos nuevo proyecto.
+2. Instalamos nuggets (newton , webapi , entity x 2).
+3. Montamos el proyecto (services , models y program (basico)).
+4. Añadimos seguridad (claims y filtros , configuramos program).
+
+¿Donde lo dejamos? . 
+1. Ya tenemos una capa de seguridad , donde comprobamos si esta logueado o no.
+2. Ademas tenemos un claim dedicado al token.
+3. Recuerda que tiene un partial _Menu donde podemos comprobar que rol es.(Modificar codigo del ManagedController y ver como guardar el id y el nombre).
+4. Ahora tenemos modificar los metodos para llamar a la api.
