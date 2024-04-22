@@ -1,0 +1,62 @@
+﻿@model Paciente
+
+@{
+    // int idmedico = 0;
+    // if (ViewData["SUMEDICO"] != null)
+    // {
+    //     idmedico = (int)ViewData["SUMEDICO"];
+    // }
+}
+
+
+<div style="margin:auto;width:50%;text-align:center">
+    <h1>Cita Rapida Recepcionista</h1>
+
+    <p>
+        <a asp-controller="CentroMedicoClient" asp-action="RecepcionistaPrincipal" class="btn btn-dark">Back</a>
+    </p>
+
+    @if (Model != null)
+    {
+        <form method="post">
+            <h5>Datos Paciente</h5>
+            <label>Nombre Paciente: </label>
+            <input type="text" name="nombre" class="form-control" value="@Model.Nombre" />
+            <label>Nombre Paciente: </label>
+            <input type="text" name="apellido" class="form-control" value="@Model.Apellido" />
+            <label>Correo: </label>
+            <input type="text" name="correo" class="form-control" value="@Model.Correo" />
+            <label>Telefono: </label>
+            <input type="text" name="telefono" class="form-control" value="@Model.Telefono" />
+            <label>Direccion: </label>
+            <input type="text" name="direccion" class="form-control" value="@Model.Direccion" />
+            <label>Genero: </label>
+            <input type="text" name="genero" class="form-control" value="@Model.Genero" />
+            @* <input type="number" name="idmedico" class="form-control" value="@idmedico" hidden />
+            <input type="number" name="idpaciente" class="form-control" value="@Model.Id" hidden /> *@
+            <hr />
+@*             <h5>Fecha y Hora</h5>
+            <label>Fecha: </label>
+            <input type="date" name="fecha" class="form-control" />
+            <label>Hora: </label>
+            <input type="time" name="hora" class="form-control" /><br /> *@
+            <button class="btn btn-success">
+                Pedir Cita
+            </button>
+        </form>
+    }
+    else
+    {
+        <form method="post">
+            <label>Nombre: </label>
+            <input type="text" name="nombre" class="form-control" />
+            <label>Apellido: </label>
+            <input type="text" name="apellido" class="form-control" />
+            <label>Correo: </label>
+            <input type="text" name="correo" class="form-control" /><br />
+            <button class="btn btn-success">
+                Buscar
+            </button>
+        </form>
+    }
+</div>

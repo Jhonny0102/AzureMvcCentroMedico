@@ -14,7 +14,9 @@ Fecha : 21/04/2024
 2. Ademas tenemos un claim dedicado al token.
 3. Recuerda que tiene un partial _Menu donde podemos comprobar que rol es.(Modificar codigo del ManagedController y ver como guardar el id y el nombre).
 4. Ahora tenemos modificar los metodos para llamar a la api.
-5. Solucionamos el error de httpcontextaccesor , no lo habiamos inyectado correctamente.
+5. Solucionamos el error de httpcontextaccesor , no lo habiamos inyectado correctamente. Tener cuidado cuando utilizemos ya que algunos
+metodo no necesitan token.
 
 Fecha: 22/04/2024
 
+1. Empezamos aplicando la redireccion de los roles

@@ -1,16 +1,25 @@
 ﻿@if(Context.User.Identity.IsAuthenticated)
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="CentroMedicoClient" asp-action="Index">Usuarios</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Managed" asp-action="LogOut">Log Out</a>
-    </li>
-    <li class="nav-item">
         @if (Context.User.IsInRole("1"))
         {
-            <a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Area Personal Admin</a>
+            <a class="nav-link text-dark" asp-area="" asp-controller="CentroMedicoClient" asp-action="AdministradorPrincipal">Area Administrador</a>
         }
+        else if (Context.User.IsInRole("2"))
+        {
+            <a class="nav-link text-dark" asp-area="" asp-controller="CentroMedicoClient" asp-action="RecepcionistaPrincipal">Area Recepcionista</a>
+        }
+        else if (Context.User.IsInRole("3"))
+        {
+            <a class="nav-link text-dark" asp-area="" asp-controller="CentroMedicoClient" asp-action="MedicoPrincipal">Area Medico</a>
+        }
+        else
+        {
+            <a class="nav-link text-dark" asp-area="" asp-controller="CentroMedicoClient" asp-action="PacientePrincipal">Area Paciente</a>
+        }
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Managed" asp-action="LogOut">Log Out @Context.User.Identity.Name</a>
     </li>
 }
 else

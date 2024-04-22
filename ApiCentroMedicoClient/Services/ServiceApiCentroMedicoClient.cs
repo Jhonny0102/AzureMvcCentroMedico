@@ -18,6 +18,7 @@ namespace ApiCentroMedicoClient.Services
             this.httpContextAccessor = httpContextAccessor;
         }
 
+        //Metodo que nos recupera el token.
         public async Task<string> GetTokenAsync(string correo , string contra)
         {
             using (HttpClient client = new HttpClient())
@@ -48,6 +49,8 @@ namespace ApiCentroMedicoClient.Services
             }
         }
 
+        //Sobre carga de Metodo.
+        //1.Metodo primero, solo recibe el request.
         private async Task<T> CallApiAsync<T>(string request)
         {
             using (HttpClient client = new HttpClient())
@@ -68,6 +71,7 @@ namespace ApiCentroMedicoClient.Services
             }
         }
 
+        //2.Metodo segundo. Recibe el request y el token
         private async Task<T> CallApiAsync<T>(string request, string token)
         {
             using (HttpClient client = new HttpClient())
@@ -89,6 +93,26 @@ namespace ApiCentroMedicoClient.Services
             }
         }
 
+        //Metodo para obtener informacion basica de USUARIO mediante el correo y la contra(NO TOKEN).
+        public async Task<Usuario> FindUsuario(string correo , string contra)
+        {
+            string request = "api/usuarios/findusuariolowdatos/"+correo+"/"+contra;
+            Usuario usuario = await this.CallApiAsync<Usuario>(request);
+            return usuario;
+        }
+
+        // ==================== Metodos Recepcionistas ==================== //
+
+        //Metodo para encontrar un paciente por su nombre , apellido y correo
+        public async Task<Paciente> FindPacienteCitaRecepcionista(string nombre , string apellido , string correo)
+        {
+            string request = "api/recepcionistas/getpacienterecepcion/"+ nombre +"/"+ apellido +"/" +correo;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            Paciente paciente = await this.CallApiAsync<Paciente>(request,token);
+            return paciente;
+        }
+
+        // ==================== Metodos Administradores ==================== //
         public async Task<List<Usuario>> GetUsuariosAsync()
         {
             string request = "api/usuarios/getusuarios";
@@ -96,12 +120,10 @@ namespace ApiCentroMedicoClient.Services
             return usuarios;
         }
 
-        public async Task<Usuario> FindUsuario(int id)
-        {
-            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
-            string request = "api/usuarios/findusuario/"+id;
-            Usuario usuario = await this.CallApiAsync<Usuario>(request, token);
-            return usuario;
-        }
+        // ==================== Metodos Pacientes ==================== //
+
+
+        // ==================== Metodos Medicos ==================== //
+
     }
 }

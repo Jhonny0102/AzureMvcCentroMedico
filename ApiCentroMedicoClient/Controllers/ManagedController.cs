@@ -30,12 +30,13 @@ namespace ApiCentroMedicoClient.Controllers
             }
             else
             {
-                //Usuario user = this.service.FindUsuario();
+                Usuario user = await this.service.FindUsuario(model.Correo, model.Contra);
                 HttpContext.Session.SetString("TOKEN",token);
                 ClaimsIdentity identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
-                identity.AddClaim(new Claim(ClaimTypes.Name, model.Correo)); //modificar a nombre
-                identity.AddClaim(new Claim(ClaimTypes.Role, model.Correo)); //Modificar a idrol
                 identity.AddClaim(new Claim("TOKEN", token)); //almacenamos el token dentro del usuario
+                identity.AddClaim(new Claim(ClaimTypes.Name, user.Nombre));
+                identity.AddClaim(new Claim(ClaimTypes.Role, user.Id_TipoUsuario.ToString()));
+                identity.AddClaim(new Claim("ID", user.Id.ToString()));
                 ClaimsPrincipal userPrincipal = new ClaimsPrincipal(identity);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, new AuthenticationProperties
                 {

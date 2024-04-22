@@ -12,18 +12,48 @@ namespace ApiCentroMedicoClient.Controllers
         {
             this.service = service;
         }
+
+        //Controller , nos muestra una pagina segun el rol.
         [AuthorizeUsers]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> AdministradorPrincipal()
         {
-            List<Usuario> usuarios = await this.service.GetUsuariosAsync();
-            return View(usuarios);
+            ViewData["NOMBREUSUARIO"] = HttpContext.User.Identity.Name ;
+            ViewData["IDUSUARIO"] = HttpContext.User.FindFirst(z => z.Type == "ID").Value;
+            return View();
+        }
+        [AuthorizeUsers]
+        public async Task<IActionResult> RecepcionistaPrincipal()
+        {
+            ViewData["NOMBREUSUARIO"] = HttpContext.User.Identity.Name;
+            ViewData["IDUSUARIO"] = HttpContext.User.FindFirst(z => z.Type == "ID").Value;
+            return View();
+        }
+        [AuthorizeUsers]
+        public async Task<IActionResult> MedicoPrincipal()
+        {
+            ViewData["NOMBREUSUARIO"] = HttpContext.User.Identity.Name;
+            ViewData["IDUSUARIO"] = HttpContext.User.FindFirst(z => z.Type == "ID").Value;
+            return View();
+        }
+        [AuthorizeUsers]
+        public async Task<IActionResult> PacientePrincipal()
+        {
+            ViewData["NOMBREUSUARIO"] = HttpContext.User.Identity.Name;
+            ViewData["IDUSUARIO"] = HttpContext.User.FindFirst(z => z.Type == "ID").Value;
+            return View();
         }
 
-        [AuthorizeUsers]
-        public async Task<IActionResult> Details(int id)
+        // ============ Controller Recepcionista ============ //
+        public async Task<IActionResult> RecepcionistaFindPacienteCita()
         {
-            Usuario user = await this.service.FindUsuario(id);
-            return View(user);
+            return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> RecepcionistaFindPacienteCita(string nombre, string apellido , string correo)
+        {
+            Paciente paciente = await this.service.FindPacienteCitaRecepcionista(nombre,apellido,correo);
+            return View(paciente);
+        }
+
     }
 }
