@@ -12,13 +12,26 @@ namespace ApiCentroMedicoClient.Filters
             var user = context.HttpContext.User;
             if (user.Identity.IsAuthenticated == false)
             {
-                RouteValueDictionary routeLogin = new RouteValueDictionary(new
-                {
-                    controller = "Managed",
-                    action = "Login"
-                });
-                context.Result = new RedirectToRouteResult(routeLogin);
+                context.Result = this.GetRoute("Managed","Login");
             }
+            else /*Este codigo esta en dudas, mirar si salta error por si es esta zona*/
+            {
+                if(user.IsInRole("1") == false && user.IsInRole("2") == false && user.IsInRole("3") == false && user.IsInRole("4") == false)
+                {
+                    context.Result = this.GetRoute("Managed","ErrorAcceso");
+                }
+            }
+        }
+
+        private RedirectToRouteResult GetRoute(string controller, string action)
+        {
+            RouteValueDictionary ruta = new RouteValueDictionary(new
+            {
+                controller = controller,
+                action = action
+            });
+            RedirectToRouteResult result = new RedirectToRouteResult(ruta);
+            return result;
         }
     }
 }

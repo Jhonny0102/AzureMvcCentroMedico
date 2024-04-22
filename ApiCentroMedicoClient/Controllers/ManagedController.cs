@@ -42,7 +42,22 @@ namespace ApiCentroMedicoClient.Controllers
                 {
                     ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
                 });
-                return RedirectToAction("Index","Home");
+                if (user.Id_TipoUsuario == 1)
+                {
+                    return RedirectToAction("AdministradorPrincipal","CentroMedicoClient");
+                }
+                else if (user.Id_TipoUsuario == 2)
+                {
+                    return RedirectToAction("RecepcionistaPrincipal", "CentroMedicoClient");
+                }
+                else if (user.Id_TipoUsuario == 3)
+                {
+                    return RedirectToAction("MedicoPrincipal", "CentroMedicoClient");
+                }
+                else
+                {
+                    return RedirectToAction("PacientePrincipal", "CentroMedicoClient");
+                }
             }
         }
 
@@ -50,6 +65,11 @@ namespace ApiCentroMedicoClient.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index","Home");
+        }
+
+        public IActionResult ErrorAcceso()
+        {
+            return View();
         }
     }
 }

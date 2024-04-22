@@ -19,4 +19,5 @@ metodo no necesitan token.
 
 Fecha: 22/04/2024
 
-1. Empezamos aplicando la redireccion de los roles
+1. Empezamos aplicando la redireccion de los roles , completado.
+2. Conseguimos redirigir segun el rol , proteger las rutas (Authorize), proteger las areas de cada rol(policy)

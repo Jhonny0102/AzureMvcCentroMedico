@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
+using System.Numerics;
 using System.Text;
 
 namespace ApiCentroMedicoClient.Services
@@ -93,6 +94,8 @@ namespace ApiCentroMedicoClient.Services
             }
         }
 
+        // ==================== Metodos Login ==================== //
+
         //Metodo para obtener informacion basica de USUARIO mediante el correo y la contra(NO TOKEN).
         public async Task<Usuario> FindUsuario(string correo , string contra)
         {
@@ -103,7 +106,41 @@ namespace ApiCentroMedicoClient.Services
 
         // ==================== Metodos Recepcionistas ==================== //
 
-        //Metodo para encontrar un paciente por su nombre , apellido y correo
+        //Metodo para encontrar el/la recepcionista.
+        public async Task<Usuario> FindRecepcionista(int id)
+        {
+            string request = "api/usuarios/findusuario/"+id;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            Usuario recepcionista = await this.CallApiAsync<Usuario>(request,token);
+            return recepcionista;
+        }
+
+        //Metodo para editar el/la recepcionista.
+        public async Task PutRecepcionista(int id, string nombre , string apellido , string correo , string contra , int estado , int tipo)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string request = "api/usuarios";
+                string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer ", token);
+                client.BaseAddress = new Uri(this.UrlApiCentro);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.Header);
+                Usuario user = new Usuario();
+                user.Id = id;
+                user.Nombre = nombre;
+                user.Apellido = apellido;
+                user.Correo = correo;
+                user.Contra = contra;
+                user.Id_EstadoUsuario = estado;
+                user.Id_TipoUsuario = tipo;
+                string json = JsonConvert.SerializeObject(user);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                HttpResponseMessage reponse = await client.PutAsync(request, content);
+            }
+        }
+
+        //Metodo para encontrar un paciente por su nombre , apellido y correo.
         public async Task<Paciente> FindPacienteCitaRecepcionista(string nombre , string apellido , string correo)
         {
             string request = "api/recepcionistas/getpacienterecepcion/"+ nombre +"/"+ apellido +"/" +correo;

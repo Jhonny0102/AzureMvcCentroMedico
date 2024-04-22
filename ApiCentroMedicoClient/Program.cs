@@ -5,7 +5,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 //Añadimos
-
 builder.Services.AddHttpContextAccessor();
 
 //Añadimos dependencias
@@ -22,10 +21,22 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-}).AddCookie();
+}).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,config =>
+{
+    config.AccessDeniedPath = "/Managed/ErrorAcceso";
+});
+
+//Añadimos Politica
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("SOLOADMINISTRADOR", policy => policy.RequireRole("1"));
+    options.AddPolicy("SOLORECEPCIONISTA", policy => policy.RequireRole("2"));
+    options.AddPolicy("SOLOMEDICO", policy => policy.RequireRole("3"));
+    options.AddPolicy("SOLOPACIENTE", policy => policy.RequireRole("4"));
+});
 
 //Configuramos
-builder.Services.AddControllersWithViews(options => options.EnableEndpointRouting = false);
+builder.Services.AddControllersWithViews(options => options.EnableEndpointRouting = false).AddSessionStateTempDataProvider();
 
 var app = builder.Build();
 
@@ -42,6 +53,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 //Añadimos session
 app.UseSession();
