@@ -11,10 +11,11 @@ namespace ApiCentroMedicoClient.Services
         private string UrlApiCentro;
         private MediaTypeWithQualityHeaderValue Header;
         private IHttpContextAccessor httpContextAccessor;
-        public ServiceApiCentroMedicoClient(IConfiguration configuration)
+        public ServiceApiCentroMedicoClient(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             this.UrlApiCentro = configuration.GetValue<string>("ApiUrls:ApiCentroMedico");
             this.Header = new MediaTypeWithQualityHeaderValue("application/json");
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<string> GetTokenAsync(string correo , string contra)

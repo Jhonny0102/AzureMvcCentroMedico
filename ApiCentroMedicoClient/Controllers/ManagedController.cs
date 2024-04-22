@@ -30,6 +30,7 @@ namespace ApiCentroMedicoClient.Controllers
             }
             else
             {
+                //Usuario user = this.service.FindUsuario();
                 HttpContext.Session.SetString("TOKEN",token);
                 ClaimsIdentity identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
                 identity.AddClaim(new Claim(ClaimTypes.Name, model.Correo)); //modificar a nombre
