@@ -18,28 +18,36 @@ namespace ApiCentroMedicoClient.Controllers
         [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
         public async Task<IActionResult> AdministradorPrincipal()
         {
-            ViewData["NOMBREUSUARIO"] = HttpContext.User.Identity.Name ;
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            Usuario user = await this.service.FindUsuario(id);
+            ViewData["NOMBREUSUARIO"] = user.Nombre;
             ViewData["IDUSUARIO"] = HttpContext.User.FindFirst(z => z.Type == "ID").Value;
             return View();
         }
         [AuthorizeUsers(Policy = "SOLORECEPCIONISTA")]
         public async Task<IActionResult> RecepcionistaPrincipal()
         {
-            ViewData["NOMBREUSUARIO"] = HttpContext.User.Identity.Name;
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            Usuario user = await this.service.FindUsuario(id);
+            ViewData["NOMBREUSUARIO"] = user.Nombre;
             ViewData["IDUSUARIO"] = HttpContext.User.FindFirst(z => z.Type == "ID").Value;
             return View();
         }
         [AuthorizeUsers(Policy = "SOLOMEDICO")]
         public async Task<IActionResult> MedicoPrincipal()
         {
-            ViewData["NOMBREUSUARIO"] = HttpContext.User.Identity.Name;
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            Usuario user = await this.service.FindUsuario(id);
+            ViewData["NOMBREUSUARIO"] = user.Nombre;
             ViewData["IDUSUARIO"] = HttpContext.User.FindFirst(z => z.Type == "ID").Value;
             return View();
         }
         [AuthorizeUsers(Policy = "SOLOPACIENTE")]
         public async Task<IActionResult> PacientePrincipal()
         {
-            ViewData["NOMBREUSUARIO"] = HttpContext.User.Identity.Name;
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            Usuario user = await this.service.FindUsuario(id);
+            ViewData["NOMBREUSUARIO"] = user.Nombre;
             ViewData["IDUSUARIO"] = HttpContext.User.FindFirst(z => z.Type == "ID").Value;
             return View();
         }
@@ -49,7 +57,7 @@ namespace ApiCentroMedicoClient.Controllers
         public async Task<IActionResult> RecepcionistaPerfil()
         {
             int idrecepcionista = int.Parse(this.HttpContext.User.FindFirst("ID").Value); 
-            Usuario recepcionista = await this.service.FindRecepcionista(idrecepcionista);
+            Usuario recepcionista = await this.service.FindUsuario(idrecepcionista);
             return View(recepcionista);
         }
         [HttpPost]

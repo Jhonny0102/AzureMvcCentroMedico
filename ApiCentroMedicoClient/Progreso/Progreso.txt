@@ -21,4 +21,8 @@ Fecha: 22/04/2024
 
 1. Empezamos aplicando la redireccion de los roles , completado.
 2. Conseguimos redirigir segun el rol , proteger las rutas (Authorize), proteger las areas de cada rol(policy)
-3. Empezamos con recepcionista, ver porque no recibe el token a la hora de editar el perfil
+3. Empezamos con recepcionista, ver porque no pilla el token a la hora de editar. (Corregido)
+
+Fecha: 23/04/2024
+(Ten en cuenta que el token contiene toda la informacion del usuario)
+1. Configuramos el controller centro medico, para poder pillar bien el nombre de los usuarios que se logueen.

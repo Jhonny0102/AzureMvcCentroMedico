@@ -140,12 +140,12 @@ namespace ApiCentroMedicoClient.Services
         // ==================== Metodos Recepcionistas ==================== //
 
         //Metodo para encontrar el/la recepcionista.
-        public async Task<Usuario> FindRecepcionista(int id)
+        public async Task<Usuario> FindUsuario(int id)
         {
             string request = "api/usuarios/findusuario/"+id;
             string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
-            Usuario recepcionista = await this.CallApiAsync<Usuario>(request,token);
-            return recepcionista;
+            Usuario user = await this.CallApiAsync<Usuario>(request,token);
+            return user;
         }
 
         //Metodo para editar el/la recepcionista.
