@@ -52,6 +52,41 @@ namespace ApiCentroMedicoClient.Controllers
             return View();
         }
 
+
+
+        // ============ Controller Administrador ============ //
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorPerfil()
+        {
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            Usuario user = await this.service.FindUsuario(id);
+            return View(user);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AdministradorPerfil(Usuario user)
+        {
+            await this.service.PutUsuario(user.Id,user.Nombre,user.Apellido,user.Correo,user.Contra,user.Id_EstadoUsuario,user.Id_TipoUsuario);
+            return RedirectToAction("AdministradorPrincipal");
+        }
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorListaUsuarios()
+        {
+            ViewData["TIPOUSUARIO"] = await this.service.GetTipoUsuario();
+            List<Usuario> usuarios = await this.service.GetUsuariosAsync();
+            return View(usuarios);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AdministradorListaUsuarios(int tipoUsuario)
+        {
+            ViewData["TIPOUSUARIO"] = await this.service.GetTipoUsuario();
+            List<Usuario> usuarios = await this.service.GetUsuariosTipoAsync(tipoUsuario);
+            return View(usuarios);
+        }
+
+
+
+
         // ============ Controller Recepcionista ============ //
         [AuthorizeUsers(Policy = "SOLORECEPCIONISTA")]
         public async Task<IActionResult> RecepcionistaPerfil()
@@ -63,7 +98,7 @@ namespace ApiCentroMedicoClient.Controllers
         [HttpPost]
         public async Task<IActionResult> RecepcionistaPerfil(Usuario user)
         {
-            this.service.PutRecepcionista(user.Id, user.Nombre, user.Apellido, user.Correo, user.Contra, user.Id_EstadoUsuario, user.Id_TipoUsuario);
+            this.service.PutUsuario(user.Id, user.Nombre, user.Apellido, user.Correo, user.Contra, user.Id_EstadoUsuario, user.Id_TipoUsuario);
             return RedirectToAction("RecepcionistaPrincipal");
         }
 

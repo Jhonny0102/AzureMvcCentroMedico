@@ -1,0 +1,87 @@
+﻿@model IEnumerable<ApiCentroMedicoClient.Models.Usuario>
+
+@{
+    List<UsuariosTipo> tipos = ViewData["TIPOUSUARIO"] as List<UsuariosTipo>;
+}
+
+<div class="container text-center">
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <h1 style="margin-right: 10px;">Lista Usuarios</h1>
+        <a asp-controller="CentroMedicoClient" asp-action="AdministradorPrincipal"><img src="~/images/iconoflecha.png" style="width:40px;height:40px;"></a>
+    </div>
+    <br />
+    <hr />
+    <br />
+    <div>
+        <h2>¿ Nuev@s Empleados ?</h2>
+        <p class="p-2">
+            <b>Si necesitas un médico</b> <a asp-controller="CentroMedico" asp-action="CreateMedico" class="text-info">Crear Médico</a>
+        </p>
+        <p class="p-2">
+            <b>Si necesitas un recepcionista</b> <a asp-controller="CentroMedico" asp-action="CreateUsuario" class="text-info"> Crear Recepcionista</a>
+        </p>
+    </div>
+    <br />
+    <hr />
+    <br />
+    <div>
+        <h2>Filtros</h2>
+        <form method="post">
+            <label>Selecciona un ROL</label>
+            <select name="tipoUsuario" class="form-select">
+                @foreach (UsuariosTipo tipo in tipos)
+                {
+                    <option value="@tipo.Id">@tipo.Tipo</option>
+                }
+            </select>
+            <br />
+            <button class="btn btn-outline-success">
+                Buscar
+            </button>
+        </form>
+    </div>
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nombre)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Apellido)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Correo)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Apellido)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Correo)
+                    </td>
+                    <td>
+                        <a asp-controller="CentroMedicoClient" asp-action="" class="btn btn-outline-info">Informacion</a>
+                        <a asp-controller="CentroMedicoClient" asp-action="" class="btn btn-outline-warning">Editar</a>
+                        <a asp-controller="CentroMedicoClient" asp-action="" class="btn btn-outline-danger">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

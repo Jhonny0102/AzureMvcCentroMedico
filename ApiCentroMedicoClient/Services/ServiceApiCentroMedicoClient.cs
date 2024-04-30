@@ -56,7 +56,7 @@ namespace ApiCentroMedicoClient.Services
             }
         }
 
-        //Sobre carga de Metodo.
+        // *** Metodo Get *** //
         //1.Metodo primero, solo recibe el request.
         private async Task<T> CallApiAsync<T>(string request)
         {
@@ -100,7 +100,7 @@ namespace ApiCentroMedicoClient.Services
             }
         }
 
-        //Sobrecarga de otro metodo.
+        // *** Metodo Put *** //
         //1. Metodo para actualizar(PUT) donde se pasa request , generico(T).
         private async Task CallPutApiAsync<T>(string request, T objeto)
         {
@@ -127,6 +127,31 @@ namespace ApiCentroMedicoClient.Services
             }
         }
 
+        // *** Metodo Delete *** // ---->> Poner a prueba
+        //1. Metodo Delete donde pasamos el request(url del API).
+        private async Task CallDeleteAsync<T>(string request)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCentro);
+                client.DefaultRequestHeaders.Clear();
+                HttpResponseMessage response = await client.DeleteAsync(request);
+            }
+        }
+        //2. Metodo delete donde pasamos el request y el token.
+        private async Task CallDeleteAsync<T>(string request, string token)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCentro);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = await client.DeleteAsync(request);
+            }
+        }
+
+        
+        
         // ==================== Metodos Login ==================== //
 
         //Metodo para obtener informacion basica de USUARIO mediante el correo y la contra(NO TOKEN).
@@ -137,19 +162,21 @@ namespace ApiCentroMedicoClient.Services
             return usuario;
         }
 
-        // ==================== Metodos Recepcionistas ==================== //
 
-        //Metodo para encontrar el/la recepcionista.
+
+        // ==================== Metodos Comun Recepcionistas Y Administradores ==================== //
+
+        //Metodo para encontrar el/la usuario.
         public async Task<Usuario> FindUsuario(int id)
         {
-            string request = "api/usuarios/findusuario/"+id;
+            string request = "api/usuarios/findusuario/" + id;
             string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
-            Usuario user = await this.CallApiAsync<Usuario>(request,token);
+            Usuario user = await this.CallApiAsync<Usuario>(request, token);
             return user;
         }
 
-        //Metodo para editar el/la recepcionista.
-        public async Task PutRecepcionista(int id, string nombre , string apellido , string correo , string contra , int estado , int tipo)
+        //Metodo para editar el/la usuario.
+        public async Task PutUsuario(int id, string nombre, string apellido, string correo, string contra, int estado, int tipo)
         {
             string request = "api/usuarios";
             string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
@@ -164,6 +191,12 @@ namespace ApiCentroMedicoClient.Services
             this.CallPutApiAsync(request, user, token);
         }
 
+
+
+
+
+        // ==================== Metodos Recepcionistas ==================== //
+
         //Metodo para encontrar un paciente por su nombre , apellido y correo.
         public async Task<Paciente> FindPacienteCitaRecepcionista(string nombre , string apellido , string correo)
         {
@@ -173,13 +206,64 @@ namespace ApiCentroMedicoClient.Services
             return paciente;
         }
 
+
+
         // ==================== Metodos Administradores ==================== //
+        //Metodo para recuperar todos los usuarios.
         public async Task<List<Usuario>> GetUsuariosAsync()
         {
             string request = "api/usuarios/getusuarios";
-            List<Usuario> usuarios = await this.CallApiAsync<List<Usuario>>(request);
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<Usuario> usuarios = await this.CallApiAsync<List<Usuario>>(request,token);
             return usuarios;
         }
+        //Metodo para recuperar todos los usuarios de un tipo especifico. Por ejemplo todos los usuario que sean paciente,recepcionista,medico o adminisitrador.
+        public async Task<List<Usuario>> GetUsuariosTipoAsync(int tipo)
+        {
+            string request = "api/usuarios/getusuariostipo/"+tipo;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<Usuario> usuarios = await this.CallApiAsync<List<Usuario>>(request,token);
+            return usuarios;
+        }
+        //Metodo para recuperar una lista de los diferentes tipos de usuario(admin,recepcionista,paciente,medico).
+        public async Task<List<UsuariosTipo>> GetTipoUsuario()
+        {
+            string request = "api/usuarios/gettipousuarios";
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<UsuariosTipo> tipos = await this.CallApiAsync<List<UsuariosTipo>>(request,token);
+            return tipos;
+        }
+        //Metodo para ver todos los datos de un paciente.
+        public async Task<PacienteDetallado> GetPacienteDetallado(int idpaciente)
+        {
+            string request = "api/pacientes/findpacientedetallado/"+idpaciente;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            PacienteDetallado paciente = await this.CallApiAsync<PacienteDetallado>(request,token);
+            return paciente;
+        }
+        //Metodo para ver todos los datos de un medico.
+        public async Task<MedicoDetallado> GetMedicoDetallado(int idmedico)
+        {
+            string request = "api/medicos/findmedicodetallado/" + idmedico;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            MedicoDetallado medico = await this.CallApiAsync<MedicoDetallado>(request, token);
+            return medico;
+        }
+        //Metodo para ver todos los datos de un usuario(Administrador y Recepcionista).
+        public async Task<UsuarioDetallado> GetUsuarioDetallado(int idusuario)
+        {
+            string request = "api/usuarios/getusuariodetallado/" + idusuario;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            UsuarioDetallado usuario = await this.CallApiAsync<UsuarioDetallado>(request, token);
+            return usuario;
+        }
+
+        //Metodo para actualizar los datos de un usuario.
+
+        //metodo para eliminar un usuario.
+
+
+
 
         // ==================== Metodos Pacientes ==================== //
 
