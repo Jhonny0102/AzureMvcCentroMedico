@@ -1,0 +1,91 @@
+﻿@model ApiCentroMedicoClient.Models.Medico
+
+@{
+    List<Estados> estados = ViewData["ESTADOS"] as List<Estados>;
+    List<Especialidades> especialidades = ViewData["ESPECIALIDADES"] as List<Especialidades>;
+}
+
+<div class="container text-center">
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <h1 style="margin-right: 10px;">Actualizar Datos Medico</h1>
+        <a asp-controller="CentroMedicoClient" asp-action="AdministradorListaUsuarios"><img src="~/images/iconoflecha.png" style="width:40px;height:40px;"></a>
+    </div>
+    <hr />
+    <div>
+        <div style="width:60%;margin:auto">
+            <form asp-action="AdministradorActualizarMedico">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <input asp-for="Id" class="form-control" hidden/>
+                    <span asp-validation-for="Id" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Nombre" class="control-label"></label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Apellido" class="control-label"></label>
+                    <input asp-for="Apellido" class="form-control" />
+                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Correo" class="control-label"></label>
+                    <input asp-for="Correo" class="form-control" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Contra" class="control-label"></label>
+                    <input asp-for="Contra" class="form-control" />
+                    <span asp-validation-for="Contra" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select class="form-select" name="EstadoUsuario">
+                        @foreach (Estados estado in estados)
+                        {
+                            @if(estado.Id == Model.EstadoUsuario)
+                            {
+                                <option value="@estado.Id" selected>@estado.Estado</option>
+                            }
+                            else
+                            {
+                                <option value="@estado.Id">@estado.Estado</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input asp-for="TipoUsuario" class="form-control" hidden/>
+                    <span asp-validation-for="TipoUsuario" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label>Especialidad</label>
+                    <select class="form-select" name="Especialidad">
+                        @foreach (Especialidades espe in especialidades)
+                        {
+                            @if(espe.Id == Model.Especialidad)
+                            {
+                                <option value="@espe.Id" selected>@espe.Especialidad</option>
+                            }
+                            else
+                            {
+                                <option value="@espe.Id">@espe.Especialidad</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <br />
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</div>

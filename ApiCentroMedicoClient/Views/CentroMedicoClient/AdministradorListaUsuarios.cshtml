@@ -2,6 +2,7 @@
 
 @{
     List<UsuariosTipo> tipos = ViewData["TIPOUSUARIO"] as List<UsuariosTipo>;
+    int idusuario = int.Parse(ViewData["IDUSUARIO"].ToString());
 }
 
 <div class="container text-center">
@@ -62,25 +63,28 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Nombre)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Apellido)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Correo)
-                    </td>
-                    <td>
-                        <a asp-controller="CentroMedicoClient" asp-action="" class="btn btn-outline-info">Informacion</a>
-                        <a asp-controller="CentroMedicoClient" asp-action="" class="btn btn-outline-warning">Editar</a>
-                        <a asp-controller="CentroMedicoClient" asp-action="" class="btn btn-outline-danger">Eliminar</a>
-                    </td>
-                </tr>
+                @if (item.Id != idusuario)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Apellido)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Correo)
+                        </td>
+                        <td>
+                            <a asp-controller="CentroMedicoClient" asp-action="AdministradorInformacion" asp-route-idusuario="@item.Id" asp-route-idtipo="@item.Id_TipoUsuario" class="btn btn-outline-info">Informacion</a>
+                            <a asp-controller="CentroMedicoClient" asp-action="AdministradorActualizar" asp-route-idusuario="@item.Id" asp-route-idtipo="@item.Id_TipoUsuario" class="btn btn-outline-warning">Editar</a>
+                            <a asp-controller="CentroMedicoClient" asp-action="" asp-route-idusuario="@item.Id" asp-route-idtipo="@item.Id_TipoUsuario" class="btn btn-outline-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>

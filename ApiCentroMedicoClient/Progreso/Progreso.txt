@@ -30,7 +30,11 @@ Fecha: 23/04/2024
 Fecha: 30/04/2024
 1. Empezamos con el area Administrador.
 1.1 Perfil(Ver datos y actualizar). Hecho
-1.2. Usuarios(Crear Medico, Crear Recepcionista , ver todos los usuarios , crud de usuarios) => 
+1.2. Usuarios(Crear Medico, Crear Recepcionista , ver todos los usuarios , crud de usuarios) =>
+	- Ver usuarios (ok)
+	- Informacion(Details) (ok).
+	- Actualizar , nos quedamos aqui , misma logica que el info sobre redirigir
+	- Nos quedamos en actualizar el paciente, los demas ya estan (Problema, no guarda la nueva informacion)
 
 lista usuarios, intentamos redirigir a la tabla cuando hacemos post
 ya que esta pagina es larga.(Se pudo pero con redirect("AdminsitradorListausuarios#tablausuarios") pero no podemos pasarle el dato extra de usuario).
