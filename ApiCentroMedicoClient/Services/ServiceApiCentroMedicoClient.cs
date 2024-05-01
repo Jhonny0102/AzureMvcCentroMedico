@@ -129,7 +129,7 @@ namespace ApiCentroMedicoClient.Services
 
         // *** Metodo Delete *** // ---->> Poner a prueba
         //1. Metodo Delete donde pasamos el request(url del API).
-        private async Task CallDeleteAsync<T>(string request)
+        private async Task CallDeleteAsync(string request)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -139,7 +139,7 @@ namespace ApiCentroMedicoClient.Services
             }
         }
         //2. Metodo delete donde pasamos el request y el token.
-        private async Task CallDeleteAsync<T>(string request, string token)
+        private async Task CallDeleteAsync(string request, string token)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -327,7 +327,12 @@ namespace ApiCentroMedicoClient.Services
         }
 
         //metodo para eliminar un usuario.
-
+        public async Task DeleteUsuarioAsync(int idusuario , int idtipo)
+        {
+            string request = "api/usuarios/deleteusuario/"+idusuario+"/"+idtipo;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            this.CallDeleteAsync(request,token);
+        }
 
 
 

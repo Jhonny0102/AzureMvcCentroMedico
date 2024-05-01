@@ -168,7 +168,7 @@ namespace ApiCentroMedicoClient.Controllers
         public async Task<IActionResult> AdministradorActualizarUsuario(Usuario user)
         {
             await this.service.PutUsuarioAsync(user.Id, user.Nombre, user.Apellido, user.Correo, user.Contra, user.Id_EstadoUsuario, user.Id_TipoUsuario);
-            return RedirectToAction("AdministradorListaUsuarios");
+            return RedirectToAction("AdministradorListaUsuarios"); //La vista no redirige al usar el seet alert
         }
 
         [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
@@ -184,7 +184,7 @@ namespace ApiCentroMedicoClient.Controllers
         public async Task<IActionResult> AdministradorActualizarMedico(Medico medico)
         {
             await this.service.UpdateMedicoAsync(medico.Id,medico.Nombre,medico.Apellido,medico.Correo,medico.Contra,medico.EstadoUsuario,medico.TipoUsuario,medico.Especialidad);
-            return RedirectToAction("AdministradorListaUsuarios");
+            return RedirectToAction("AdministradorListaUsuarios"); //La vista no redirige al usar el seet alert
         }
 
         [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
@@ -199,8 +199,15 @@ namespace ApiCentroMedicoClient.Controllers
         public async Task<IActionResult> AdministradorActualizarPaciente(Paciente pac)
         {
             await this.service.UpdatePacienteAsync(pac.Id,pac.Nombre,pac.Apellido,pac.Correo,pac.Contra,pac.Telefono,pac.Direccion,pac.Edad,pac.Genero,pac.EstadoUsuario,pac.TipoUsuario);
-            return RedirectToAction("AdministradorListaUsuarios");
+            return RedirectToAction("AdministradorListaUsuarios"); //La vista no redirige al usar el seet alert
         }
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorEliminarUsuario(int idusuario, int idtipo)
+        {
+            await this.service.DeleteUsuarioAsync(idusuario,idtipo);
+            return RedirectToAction("AdministradorListaUsuarios");
+        } 
 
 
 

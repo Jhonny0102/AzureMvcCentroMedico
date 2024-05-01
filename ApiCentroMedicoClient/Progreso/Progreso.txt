@@ -34,7 +34,12 @@ Fecha: 30/04/2024
 	- Ver usuarios (ok)
 	- Informacion(Details) (ok).
 	- Actualizar , nos quedamos aqui , misma logica que el info sobre redirigir
-	- Nos quedamos en actualizar el paciente, los demas ya estan (Problema, no guarda la nueva informacion)
+	- Nos quedamos en actualizar el paciente, los demas ya estan (Hecho)
+	- Ya podemos eliminar todo tipo de usuario, falta el sweet alert para eliminar. <--
 
 lista usuarios, intentamos redirigir a la tabla cuando hacemos post
 ya que esta pagina es larga.(Se pudo pero con redirect("AdminsitradorListausuarios#tablausuarios") pero no podemos pasarle el dato extra de usuario).
+
+Fecha: 1/05/2024
+1. Nos quedamos en actualizar el paciente, los demas ya estan (Hecho)
+2. Ya podemos eliminar todo tipo de usuario, falta el sweet alert para eliminar. <--

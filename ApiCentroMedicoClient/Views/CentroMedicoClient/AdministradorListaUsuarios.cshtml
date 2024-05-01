@@ -81,7 +81,7 @@
                         <td>
                             <a asp-controller="CentroMedicoClient" asp-action="AdministradorInformacion" asp-route-idusuario="@item.Id" asp-route-idtipo="@item.Id_TipoUsuario" class="btn btn-outline-info">Informacion</a>
                             <a asp-controller="CentroMedicoClient" asp-action="AdministradorActualizar" asp-route-idusuario="@item.Id" asp-route-idtipo="@item.Id_TipoUsuario" class="btn btn-outline-warning">Editar</a>
-                            <a asp-controller="CentroMedicoClient" asp-action="" asp-route-idusuario="@item.Id" asp-route-idtipo="@item.Id_TipoUsuario" class="btn btn-outline-danger">Eliminar</a>
+                            <a asp-controller="CentroMedicoClient" asp-action="AdministradorEliminarUsuario" asp-route-idusuario="@item.Id" asp-route-idtipo="@item.Id_TipoUsuario" class="btn btn-outline-danger">Eliminar</a>
                         </td>
                     </tr>
                 }
