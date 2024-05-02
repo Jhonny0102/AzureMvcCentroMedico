@@ -1,8 +1,10 @@
 ﻿using ApiCentroMedicoClient.Models;
 using Azure;
+using Azure.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NuGet.Common;
+using System;
 using System.Diagnostics.Contracts;
 using System.Net.Http.Headers;
 using System.Numerics;
@@ -127,7 +129,7 @@ namespace ApiCentroMedicoClient.Services
             }
         }
 
-        // *** Metodo Delete *** // ---->> Poner a prueba
+        // *** Metodo Delete *** // 
         //1. Metodo Delete donde pasamos el request(url del API).
         private async Task CallDeleteAsync(string request)
         {
@@ -150,8 +152,45 @@ namespace ApiCentroMedicoClient.Services
             }
         }
 
-        
-        
+        // *** Metodo Post *** //
+        private async Task CallPostAsync<T>(string request , T objeto)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCentro);
+                client.DefaultRequestHeaders.Clear();
+                string json = JsonConvert.SerializeObject(objeto);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PostAsync(request, content);
+            }
+        }
+
+        private async Task CallPostAsync<T>(string request, T objeto, string token)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCentro);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                string json = JsonConvert.SerializeObject(objeto);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PostAsync(request, content);
+            }
+        }
+
+        private async Task CallPostAsync(string request, string token)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApiCentro);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = await client.PostAsync(request,null);
+            }
+        }
+
+
+
         // ==================== Metodos Login ==================== //
 
         //Metodo para obtener informacion basica de USUARIO mediante el correo y la contra(NO TOKEN).
@@ -325,13 +364,157 @@ namespace ApiCentroMedicoClient.Services
             List<Especialidades> especialidades = await this.CallApiAsync<List<Especialidades>>(request, token);
             return especialidades;
         }
-
-        //metodo para eliminar un usuario.
+        //Metodo para eliminar un usuario.
         public async Task DeleteUsuarioAsync(int idusuario , int idtipo)
         {
             string request = "api/usuarios/deleteusuario/"+idusuario+"/"+idtipo;
             string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             this.CallDeleteAsync(request,token);
+        }
+        //Metodo para crear un Medico desde Administrador.
+        public async Task CreateMedicoAsync(string nombre , string apellido , string correo , string contra , int especialidad)
+        {
+            string request = "api/medicos/createmedico";
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            Medico user = new Medico();
+            user.Nombre = nombre;
+            user.Apellido = apellido;
+            user.Correo = correo;
+            user.Contra = contra;
+            user.Especialidad = especialidad;
+            this.CallPostAsync(request, user, token);
+        }
+        //Metodo para crear un Recepcionista desde Administrador.
+        public async Task CreateUsuarioAsync(string nombre, string apellido, string correo, string contra, int tipo)
+        {
+            string request = "api/usuarios/createusuario";
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            Usuario user = new Usuario();
+            user.Nombre = nombre;
+            user.Apellido = apellido;
+            user.Correo = correo;
+            user.Contra = contra;
+            user.Id_TipoUsuario = tipo;
+            this.CallPostAsync(request, user, token);
+        }
+        //Metodo para obtener el conjunto de citas.
+        public async Task<List<CitaDetallado>> GetCitasFiltroAsync(DateTime fecha , DateTime? fechahasta)
+        {
+            string request = "api/administrador/getcitas";
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<CitaDetallado> citas = await this.CallApiAsync<List<CitaDetallado>>(request, token);
+            //Si ha pasado el parametro fechahasta sera un filtro de rango.
+            if (fechahasta != null)
+            {
+                return citas.Where(z => z.Fecha >= fecha && z.Fecha <= fechahasta).ToList();
+            }
+            //Si solo ha pasado la fecha sera fechas en adelante.
+            else
+            {
+                return citas.Where(z => z.Fecha >= fecha).ToList();
+            }
+        }
+        //Metodo para obtener todas las citas.
+        public async Task<List<CitaDetallado>> GetCitasAsync()
+        {
+            string request = "api/administrador/getcitas";
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<CitaDetallado> citas = await this.CallApiAsync<List<CitaDetallado>>(request, token);
+            return citas;
+        }
+        //Metodo para encontrar una CITA.
+        public async Task<Cita> FindCitaAsync(int idcita)
+        {
+            string request = "api/administrador/findcita/"+idcita;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            Cita cita = await this.CallApiAsync<Cita>(request, token);
+            return cita;
+        }
+        //Metodo para encontrar un estado de cita mediante id.
+        public async Task<SeguimientoCita> FindSeguimientoCitaAsync(int idseguimientocita)
+        {
+            string request = "api/otros/getestadosseguimiento";
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<SeguimientoCita> seguimientos = await this.CallApiAsync<List<SeguimientoCita>>(request, token);
+            return seguimientos.FirstOrDefault(z => z.Id == idseguimientocita);
+        }
+        //Metodo para eliminar una cita.
+        public async Task DeleteCitaAsync(int idcita)
+        {
+            string request = "api/administrador/deletecita/"+idcita;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            this.CallDeleteAsync(request, token);
+        }
+        //Metodo para obtener todas las peticiones sobre usuarios.
+        public async Task<List<PeticionesDetallado>> GetPeticionesUsuarioAsync()
+        {
+            string request = "api/administrador/getpeticionesdetalladasusuarios";
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<PeticionesDetallado> peticionesUsuarios = await this.CallApiAsync<List<PeticionesDetallado>>(request, token);
+            return peticionesUsuarios;
+        }
+        //Metodo para aceptar una peticion de usuario.
+        public async Task AceptPeticionUsuarioAsync(int idpeticion, int idusuario , int estado)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string request = "api/administrador/aceptarpeticionusuario/"+idpeticion+"/"+idusuario+"/"+estado;
+                string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+                client.BaseAddress = new Uri(this.UrlApiCentro);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = await client.PutAsync(request, null);
+            }
+        }
+        //Metodo para denegar una peticion de usuario.
+        public async Task DeletePeticionUsuarioAsync(int idpeticion)
+        {
+            string request = "api/administrador/eliminarpeticionusuario/" + idpeticion;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            this.CallDeleteAsync(request, token);
+        }
+
+
+        //Metodo para aceptar una peticion de medicamento nuevo.
+        public async Task AceptPeticionMedicamentoNuevo(int idpeticion, string nombre , string descripcion, int estado)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string request = "api/administrador/aceptarpeticionmedicamentonuevo/"+idpeticion+"/"+nombre+"/"+descripcion+"/"+estado;
+                string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+                client.BaseAddress = new Uri(this.UrlApiCentro);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = await client.PutAsync(request,null);
+            }
+        }
+        //Metodo para aceptar una peticion de medicamento actualizado.
+        public async Task AceptPeticionMedicamentoUpdate(int idpeticion, int idmedicamento , int estado)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string request = "api/administrador/aceptarpeticionmedicamentoactualizado/"+idpeticion+"/"+idmedicamento+"/"+estado;
+                string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+                client.BaseAddress = new Uri(this.UrlApiCentro);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = await client.PutAsync(request, null);
+            }
+        }
+        //Metodo para obtener todas las peticiones sobre los medicamentos.
+        public async Task<List<PeticionesMedicamentoDetallado>> GetPeticionesMedicamentosAsync()
+        {
+            string request = "api/administrador/getpeticionesdetalladasmedicamentos";
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<PeticionesMedicamentoDetallado> peticionesMedicamentos = await this.CallApiAsync<List<PeticionesMedicamentoDetallado>>(request, token);
+            return peticionesMedicamentos;
+        }
+        //Metodo para eliminar una peticion de medicamentos.
+        public async Task DeletePeticionMedicamentoAsync(int idpeticion)
+        {
+            string request = "api/administrador/eliminarpeticionmedicamento/"+idpeticion;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            this.CallDeleteAsync(request, token);
         }
 
 

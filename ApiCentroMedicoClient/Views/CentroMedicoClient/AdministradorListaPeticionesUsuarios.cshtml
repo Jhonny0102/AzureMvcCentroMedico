@@ -1,0 +1,46 @@
+﻿@model IEnumerable<ApiCentroMedicoClient.Models.PeticionesDetallado>
+
+@{
+    ViewData["Title"] = "AdministradorListaPeticionesUsuarios";
+}
+
+<div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <h1 style="margin-right: 10px;">Lista Peticicones Medicamentos</h1>
+        <a asp-controller="CentroMedicoClient" asp-action="AdministradorPrincipal"><img src="~/images/iconoflecha.png" style="width:40px;height:40px;"></a>
+    </div>
+    <br />
+    <hr />
+    <br />
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (PeticionesDetallado petis in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <img src="~/images/iconoajusteusuario.png" style="width:90px;height90px;margin:auto" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">@petis.Nombre</h5>
+                        <p class="card-text">
+                            ¿ Quieres dar de <b>@petis.Estado</b> al usuario <b>@petis.Nombre</b> con el ID <b>@petis.IdUsuario</b> ?
+                        </p>
+                    </div>
+                    <div class="card-footer" style="margin:auto">
+                        <a asp-controller="CentroMedicoClient" asp-action="AdministradorAceptarPeticionUsuario" 
+                        asp-route-idpeticion=""
+                        asp-route-idusuario=""
+                        asp-route-estado=""
+                        class="btn btn-success">
+                            Aceptar
+                        </a>
+                        <a asp-controller="CentroMedicoClient" asp-action=""
+                           asp-route-idpeticion=""
+                        class="btn btn-warning">
+                            Denegar
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+</div>

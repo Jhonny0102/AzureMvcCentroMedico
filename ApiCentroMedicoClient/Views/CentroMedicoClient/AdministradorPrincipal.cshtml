@@ -5,11 +5,11 @@
 <div class="row row-cols-1 row-cols-md-3 g-4">
     <div class="col">
         <div class="card h-100">
-            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <img src="~/images/rueda.png" style="width:300px;height:300px;margin:auto" alt="...">
             <div class="card-body">
                 <h5 class="card-title">Perfil</h5>
                 <p class="card-text">Permite ver la informacion de tu perfil o si quieres poder editarla.</p>
-                <div class="card-footer">
+                <div class="card-footer" style="margin:auto">
                     <a asp-controller="CentroMedicoClient" asp-action="AdministradorPerfil" class="btn btn-outline-success">Acceder</a>
                 </div>
             </div>
@@ -17,7 +17,32 @@
     </div>
     <div class="col">
         <div class="card h-100">
-            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <img src="~/images/rueda.png" style="width:300px;height:300px;margin:auto" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Citas</h5>
+                <p class="card-text">Permite ver todas las citas, donde puedes eliminar la cita o ver sus detalles como hora y quienes intervienen.</p>
+                <div class="card-footer" style="margin:auto">
+                    <a asp-controller="CentroMedicoClient" asp-action="AdministradorGetListaCitas" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px;margin:auto" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Peticiones</h5>
+                <p class="card-text">Permite aceptar o rechazar peticiones, tanto de usuarios como de medicamentos.</p>
+                <div class="card-footer" style="margin:auto">
+                    <a asp-controller="CentroMedicoClient" asp-action="AdministradorListaPeticionesUsuarios" class="btn btn-outline-success">Usuarios</a>
+                    <a asp-controller="CentroMedicoClient" asp-action="AdministradorListaPeticionesMedicamentos" class="btn btn-outline-success">Medicamentos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px;margin:auto" alt="...">
             <div class="card-body">
                 <h5 class="card-title">Usuarios</h5>
                 <p class="card-text">
@@ -26,33 +51,8 @@
                         medicos y recepcionistas
                     </b>.
                 </p>
-                <div class="card-footer">
-                    <a asp-controller="CentroMedicoClient" asp-action="AdministradorListaUsuarios" asp-route-idMedico="" class="btn btn-outline-success">Acceder</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="card h-100">
-            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Citas</h5>
-                <p class="card-text">Permite ver todas las citas, donde puedes eliminar la cita o ver sus detalles como hora y quienes intervienen.</p>
-                <div class="card-footer">
-                    <a asp-controller="CentroMedicoClient" asp-action="" class="btn btn-outline-success">Acceder</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="card h-100">
-            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Peticiones</h5>
-                <p class="card-text">Permite aceptar o rechazar peticiones, tanto de usuarios como de medicamentos.</p>
-                <div class="card-footer">
-                    <a asp-controller="CentroMedicoClient" asp-action="" asp-route-idMedico="" class="btn btn-outline-success">Solicitar</a>
-                    <a asp-controller="CentroMedicoClient" asp-action="" asp-route-idMedico="" class="btn btn-outline-success">Alta/baja</a>
+                <div class="card-footer" style="margin:auto">
+                    <a asp-controller="CentroMedicoClient" asp-action="AdministradorListaUsuarios" class="btn btn-outline-success">Acceder</a>
                 </div>
             </div>
         </div>

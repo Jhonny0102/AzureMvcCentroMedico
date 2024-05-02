@@ -42,4 +42,13 @@ ya que esta pagina es larga.(Se pudo pero con redirect("AdminsitradorListausuari
 
 Fecha: 1/05/2024
 1. Nos quedamos en actualizar el paciente, los demas ya estan (Hecho)
-2. Ya podemos eliminar todo tipo de usuario, falta el sweet alert para eliminar. <--
+2. Ya podemos eliminar todo tipo de usuario, falta el sweet alert para eliminar. <-- Dejar los estilos y efectos al ultimo
+
+Fecha :02/05/2024
+1. Crear Recepcionista y Crear Medico. (A la hora de crear un admin pedir confirmacion "Seguro que quieres crear el administrador ...")
+2. Crear lista de Citas y su crud. (Recuerda que has cambiado en el metodo de GetCitas del APi el model de CITAS por CITADETALLADO)
+								   (Mejorar de la lista de citas el estilo , y el estilo de detalles de una cita , Ver si puedes poner un sweet alert para delete)
+3. Crear las peticiones de administrador.
+	- Peticiones medicamentos listo.
+	- Peticiones usuarios en progreso ........
+4. Crear Paciente.

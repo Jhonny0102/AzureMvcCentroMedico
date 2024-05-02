@@ -1,0 +1,38 @@
+﻿@model ApiCentroMedicoClient.Models.PacienteDetallado
+
+@{
+    ViewData["Title"] = "AdministradorInfoPaciente";
+}
+
+<div class="container text-center">
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <h1 style="margin-right: 10px;">Informacion Paciente</h1>
+        <a asp-controller="CentroMedicoClient" asp-action="AdministradorFindCita" asp-route-idcita="@ViewData["CITASELECCIONADA"]"><img src="~/images/iconoflecha.png" style="width:40px;height:40px;"></a>
+    </div>
+</div>
+<br />
+<hr />
+<br />
+<div class="card mb-9" style="max-width: 940px;margin:auto">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="~/images/iconousuario.png" class="img-fluid rounded-start" alt="...">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">ID : @Model.Id</li>
+                    <li class="list-group-item">Apellido : @Model.Apellido</li>
+                    <li class="list-group-item">Correo : @Model.Correo</li>
+                    <li class="list-group-item">Contraseña : @Model.Contra</li>
+                    <li class="list-group-item">Telefono : @Model.Telefono</li>
+                    <li class="list-group-item">Direccion : @Model.Direccion</li>
+                    <li class="list-group-item">Edad : @Model.Edad</li>
+                    <li class="list-group-item">Genero : @Model.Genero</li>
+                    <li class="list-group-item">Estado : @Model.Estado</li>
+                    <li class="list-group-item">Tipo : @Model.Tipo</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

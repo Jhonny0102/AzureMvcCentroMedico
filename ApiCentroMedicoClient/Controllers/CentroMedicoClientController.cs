@@ -2,6 +2,7 @@
 using ApiCentroMedicoClient.Models;
 using ApiCentroMedicoClient.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace ApiCentroMedicoClient.Controllers
@@ -207,7 +208,145 @@ namespace ApiCentroMedicoClient.Controllers
         {
             await this.service.DeleteUsuarioAsync(idusuario,idtipo);
             return RedirectToAction("AdministradorListaUsuarios");
-        } 
+        }
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorCreateMedico()
+        {
+            ViewData["ESPECIALIDADES"] = await this.service.GetEspecialidadesAsync();
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AdministradorCreateMedico(Medico medico)
+        {
+            await this.service.CreateMedicoAsync(medico.Nombre, medico.Apellido, medico.Correo, medico.Contra, medico.Especialidad);
+            return RedirectToAction("AdministradorListaUsuarios");
+        }
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorCreateUsuario()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> AdministradorCreateUsuario(Usuario user)
+        {
+            await this.service.CreateUsuarioAsync(user.Nombre,user.Apellido,user.Correo,user.Contra,user.Id_TipoUsuario);
+            return RedirectToAction("AdministradorListaUsuarios");
+        }
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorGetListaCitas()
+        {
+            List<CitaDetallado> citas = await this.service.GetCitasAsync();
+            return View(citas);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AdministradorGetListaCitas(DateTime fecha , DateTime? fechahasta)
+        {
+            List<CitaDetallado> citas;
+            if (fechahasta != null)
+            {
+                citas = await this.service.GetCitasFiltroAsync(fecha,fechahasta.Value);
+            }
+            else
+            {
+                citas = await this.service.GetCitasFiltroAsync(fecha,null);
+            }
+            
+            return View(citas);
+        }
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorFindCita(int idcita)
+        {
+            Cita cita = await this.service.FindCitaAsync(idcita);
+            Usuario paciente = await this.service.FindUsuarioAsync(cita.Paciente);
+            Usuario medico = await this.service.FindUsuarioAsync(cita.Medico);
+            SeguimientoCita seguimientocita = await this.service.FindSeguimientoCitaAsync(cita.SeguimientoCita);
+            ViewData["NOMBREMEDICO"] = medico.Nombre + " " + medico.Apellido ;
+            ViewData["NOMBREPACIENTE"] = paciente.Nombre + " " + paciente.Apellido;
+            ViewData["SEGUIMIENTO"] = seguimientocita.Estado;
+            return View(cita);
+        }
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorFindMedicoCita(int idmedico, int idcita)
+        {
+            MedicoDetallado medico = await this.service.GetMedicoDetallado(idmedico);
+            ViewData["CITASELECCIONADA"] = idcita;
+            return View(medico);
+        }
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorFindPacienteCita(int idpaciente, int idcita)
+        {
+            PacienteDetallado paciente = await this.service.GetPacienteDetallado(idpaciente);
+            ViewData["CITASELECCIONADA"] = idcita;
+            return View(paciente);
+        }
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorDeleteCita(int idcita)
+        {
+            await this.service.DeleteCitaAsync(idcita);
+            return RedirectToAction("AdministradorGetListaCitas");
+        }
+
+        //Controller para el manejo de peticiones de usuarios
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorListaPeticionesUsuarios()
+        {
+            List<PeticionesDetallado> peticionesUsuarios = await this.service.GetPeticionesUsuarioAsync();
+            return View(peticionesUsuarios);
+        }
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorAceptarPeticionUsuario(int idpeticion, int idusuario, int estado)
+        {
+            await this.service.AceptPeticionUsuarioAsync(idpeticion,idusuario,estado);
+            return RedirectToAction("AdministradorListaPeticionesUsuarios");
+        }
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorDenegarPeticionUsuario(int idpeticion)
+        {
+            await this.service.DeletePeticionUsuarioAsync(idpeticion);
+            return RedirectToAction("AdministradorListaPeticionesUsuarios");
+        }
+
+
+
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorListaPeticionesMedicamentos()
+        {
+            List<PeticionesMedicamentoDetallado> peticionesMedicamentos = await this.service.GetPeticionesMedicamentosAsync();
+            return View(peticionesMedicamentos);
+        }
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorAceptarMedicamento(int idpeticion, int? idmedicamento, string nombre, string descripcion, int estado)
+        {
+            if (idmedicamento != null)
+            {
+                await this.service.AceptPeticionMedicamentoUpdate(idpeticion,idmedicamento.Value,estado);
+                return RedirectToAction("AdministradorListaPeticionesMedicamentos");
+            }
+            else
+            {
+                await this.service.AceptPeticionMedicamentoNuevo(idpeticion, nombre, descripcion, estado);
+                return RedirectToAction("AdministradorListaPeticionesMedicamentos");
+            }
+        }
+
+        [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
+        public async Task<IActionResult> AdministradorEliminarPeticionMedicamento(int idpeticion)
+        {
+            await this.service.DeletePeticionMedicamentoAsync(idpeticion);
+            return RedirectToAction("AdministradorListaPeticionesMedicamentos");
+        }
 
 
 
