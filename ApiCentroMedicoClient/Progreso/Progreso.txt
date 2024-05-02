@@ -51,5 +51,9 @@ Fecha :02/05/2024
 3. Crear las peticiones de administrador.
 	- Peticiones medicamentos listo.
 	- Peticiones usuarios (Comprobar mas adelante el de eliminar)
-4. Crear Paciente.
+4. Crear Paciente. (Hecho)
 
+Fecha: 03/05/2024
+1. Terminar zona Paciente.
+2. Terminar zona Recepcionista.
+3. Termiar zona Medico.
