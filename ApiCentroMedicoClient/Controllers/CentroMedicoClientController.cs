@@ -72,7 +72,7 @@ namespace ApiCentroMedicoClient.Controllers
             return RedirectToAction("AdministradorPrincipal");
         }
 
-        //Controller donde mostramos y devolvemos un conjunto de usuarios ,segun el filtro.
+        //Controller donde manejamos los usuarios de la BBDD.
         [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
         public async Task<IActionResult> AdministradorListaUsuarios()
         {
@@ -210,6 +210,7 @@ namespace ApiCentroMedicoClient.Controllers
             return RedirectToAction("AdministradorListaUsuarios");
         }
 
+        //Controller que permite crear recepcionista/administrador y medicos.
         [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
         public async Task<IActionResult> AdministradorCreateMedico()
         {
@@ -236,6 +237,7 @@ namespace ApiCentroMedicoClient.Controllers
             return RedirectToAction("AdministradorListaUsuarios");
         }
 
+        //Controller de manejo de citas.
         [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
         public async Task<IActionResult> AdministradorGetListaCitas()
         {
@@ -316,9 +318,7 @@ namespace ApiCentroMedicoClient.Controllers
             return RedirectToAction("AdministradorListaPeticionesUsuarios");
         }
 
-
-
-
+        //Controller para manejo de peticiones medicamentos.
         [AuthorizeUsers(Policy = "SOLOADMINISTRADOR")]
         public async Task<IActionResult> AdministradorListaPeticionesMedicamentos()
         {
@@ -347,9 +347,6 @@ namespace ApiCentroMedicoClient.Controllers
             await this.service.DeletePeticionMedicamentoAsync(idpeticion);
             return RedirectToAction("AdministradorListaPeticionesMedicamentos");
         }
-
-
-
 
 
         // ============ Controller Recepcionista ============ //

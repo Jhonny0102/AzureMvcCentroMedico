@@ -14,6 +14,21 @@ namespace ApiCentroMedicoClient.Controllers
         {
             this.service = service;
         }
+
+        //Controller que permite crear pacientes.
+        public async Task<IActionResult> CreatePaciente()
+        {
+            List<Especialidades> especialidad = await this.service.GetEspecialidadesAsync();
+            ViewData["ESPECIALIDADES"] = especialidad;
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreatePaciente(Paciente paciente, int especialidad)
+        {
+            await this.service.CreatePacienteAsync(paciente.Nombre, paciente.Apellido, paciente.Correo, paciente.Contra, paciente.Telefono, paciente.Direccion, paciente.Edad, paciente.Genero, especialidad);
+            return RedirectToAction("Login");
+        }
+
         public IActionResult Login()
         {
             return View();
@@ -64,7 +79,7 @@ namespace ApiCentroMedicoClient.Controllers
         public async Task<IActionResult> LogOut()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Login","Managed");
         }
 
         public IActionResult ErrorAcceso()

@@ -50,5 +50,6 @@ Fecha :02/05/2024
 								   (Mejorar de la lista de citas el estilo , y el estilo de detalles de una cita , Ver si puedes poner un sweet alert para delete)
 3. Crear las peticiones de administrador.
 	- Peticiones medicamentos listo.
-	- Peticiones usuarios en progreso ........
+	- Peticiones usuarios (Comprobar mas adelante el de eliminar)
 4. Crear Paciente.
+

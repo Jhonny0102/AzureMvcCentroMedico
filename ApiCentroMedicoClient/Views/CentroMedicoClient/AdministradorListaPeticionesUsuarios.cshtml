@@ -26,14 +26,14 @@
                     </div>
                     <div class="card-footer" style="margin:auto">
                         <a asp-controller="CentroMedicoClient" asp-action="AdministradorAceptarPeticionUsuario" 
-                        asp-route-idpeticion=""
-                        asp-route-idusuario=""
-                        asp-route-estado=""
+                        asp-route-idpeticion="@petis.IdPeticion"
+                        asp-route-idusuario="@petis.IdUsuario"
+                        asp-route-estado="@petis.NuevoEstado"
                         class="btn btn-success">
                             Aceptar
                         </a>
-                        <a asp-controller="CentroMedicoClient" asp-action=""
-                           asp-route-idpeticion=""
+                        <a asp-controller="CentroMedicoClient" asp-action="AdministradorDenegarPeticionUsuario"
+                           asp-route-idpeticion="@petis.IdPeticion"
                         class="btn btn-warning">
                             Denegar
                         </a>

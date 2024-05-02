@@ -1,13 +1,30 @@
-﻿<h1>Log In Empleados</h1> 
-
-<h2 style="color:blue">@ViewData["MENSAJE"]</h2> 
-  
-<form method="post"> 
-    <label>User:</label> 
-    <input type="text" name="correo" class="form-control"/> 
-    <label>Password</label> 
-    <input type="text" name="contra" class="form-control"/> 
-    <button class="btn btn-dark"> 
-        Log In 
-    </button> 
-</form> 
+﻿<div class="container text-center">
+    <h1>Log In Usuarios</h1>
+    <hr />
+    <div class="card mb-3" style="max-width: 50%;margin:auto">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="~/images/iconologin.png" style="height:200px;width:200px;margin:auto">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <form method="post">
+                        <label>User:</label>
+                        <input type="text" name="correo" class="form-control" />
+                        <label>Password</label>
+                        <input type="text" name="contra" class="form-control" />
+                        <br />
+                        <button class="btn btn-dark">
+                            Log In
+                        </button>
+                    </form>
+                    <br />
+                    <p>
+                        <a asp-controller="Managed" asp-action="CreatePaciente" class="text-info">¿ No estas registrado ? Crear Cuenta</a>
+                    </p>
+                    <h2 style="color:blue">@ViewData["MENSAJE"]</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

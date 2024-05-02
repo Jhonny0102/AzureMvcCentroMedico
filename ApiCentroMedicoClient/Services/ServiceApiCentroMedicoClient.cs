@@ -201,6 +201,22 @@ namespace ApiCentroMedicoClient.Services
             return usuario;
         }
 
+        //Metodo para crear paciente desde el login.
+        public async Task CreatePacienteAsync(string nombre, string apellido, string correo, string contra, int telefono, string direccion, int edad, string genero,int especialidad)
+        {
+            string request = "api/pacientes/createpaciente/"+especialidad;
+            Paciente user = new Paciente();
+            user.Nombre = nombre;
+            user.Apellido = apellido;
+            user.Correo = correo;
+            user.Contra = contra;
+            user.Telefono = telefono;
+            user.Direccion = direccion;
+            user.Edad = edad;
+            user.Genero = genero;
+            this.CallPostAsync(request, user);
+        }
+
 
 
         // ==================== Metodos Comun Recepcionistas Y Administradores ==================== //
@@ -360,8 +376,7 @@ namespace ApiCentroMedicoClient.Services
         public async Task<List<Especialidades>> GetEspecialidadesAsync()
         {
             string request = "api/otros/getespecialidadesmedico";
-            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
-            List<Especialidades> especialidades = await this.CallApiAsync<List<Especialidades>>(request, token);
+            List<Especialidades> especialidades = await this.CallApiAsync<List<Especialidades>>(request);
             return especialidades;
         }
         //Metodo para eliminar un usuario.
