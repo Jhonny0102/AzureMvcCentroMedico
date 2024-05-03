@@ -1,13 +1,13 @@
 ﻿@model Paciente
 
 @{
-
+    List<Estados> estados = ViewData["ESTADOS"] as List<Estados>;
 }
 
 
 <div style="margin:auto;width:50%;text-align:center">
     <div style="display: flex; align-items: center; justify-content: center;">
-        <h1 style="margin-right: 10px;">Cita Rapida </h1>
+        <h1 style="margin-right: 10px;">Peticion Ususario </h1>
         <a asp-controller="CentroMedicoClient" asp-action="RecepcionistaPrincipal"><img src="~/images/iconoflecha.png" style="width:40px;height:40px;"></a>
     </div>
     <hr />
@@ -17,7 +17,7 @@
             <h5>Datos Paciente</h5>
             <label>Nombre Paciente: </label>
             <input type="text" name="nombre" class="form-control" value="@Model.Nombre" />
-            <label>Nombre Paciente: </label>
+            <label>Apellido Paciente: </label>
             <input type="text" name="apellido" class="form-control" value="@Model.Apellido" />
             <label>Correo: </label>
             <input type="text" name="correo" class="form-control" value="@Model.Correo" />
@@ -27,16 +27,24 @@
             <input type="text" name="direccion" class="form-control" value="@Model.Direccion" />
             <label>Genero: </label>
             <input type="text" name="genero" class="form-control" value="@Model.Genero" />
-            @* <input type="number" name="idmedico" class="form-control" value="@idmedico" hidden />
-            <input type="number" name="idpaciente" class="form-control" value="@Model.Id" hidden /> *@
-            <hr />
-@*             <h5>Fecha y Hora</h5>
-            <label>Fecha: </label>
-            <input type="date" name="fecha" class="form-control" />
-            <label>Hora: </label>
-            <input type="time" name="hora" class="form-control" /><br /> *@
+            <input type="text" name="idpaciente" class="form-control" value="@Model.Id" hidden />
+            <label>¿Nuevo Estado?</label>
+            <select name="estadonuevo" class="form-select">
+                @foreach (Estados estado in estados)
+                {
+                    @if (Model.EstadoUsuario == estado.Id)
+                    {
+                        <option value="@estado.Id" disabled>@estado.Estado</option>
+                    }
+                    else
+                    {
+                        <option value="@estado.Id">@estado.Estado</option>
+                    }
+                }
+            </select>
+            <br />
             <button class="btn btn-success">
-                Pedir Cita
+                Solicitar Peticion
             </button>
         </form>
     }
@@ -49,6 +57,7 @@
             <input type="text" name="apellido" class="form-control" />
             <label>Correo: </label>
             <input type="text" name="correo" class="form-control" /><br />
+            <br />
             <button class="btn btn-success">
                 Buscar
             </button>

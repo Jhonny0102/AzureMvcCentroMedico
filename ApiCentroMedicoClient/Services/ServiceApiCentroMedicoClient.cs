@@ -217,8 +217,6 @@ namespace ApiCentroMedicoClient.Services
             this.CallPostAsync(request, user);
         }
 
-
-
         // ==================== Metodos Comun Recepcionistas Y Administradores ==================== //
 
         //Metodo para encontrar el/la usuario.
@@ -246,10 +244,6 @@ namespace ApiCentroMedicoClient.Services
             this.CallPutApiAsync(request, user, token);
         }
 
-
-
-
-
         // ==================== Metodos Recepcionistas ==================== //
 
         //Metodo para encontrar un paciente por su nombre , apellido y correo.
@@ -259,6 +253,19 @@ namespace ApiCentroMedicoClient.Services
             string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             Paciente paciente = await this.CallApiAsync<Paciente>(request,token);
             return paciente;
+        }
+        //Metodo para solicitar una peticion de usuaio.
+        public async Task PeticionUsuarioAsync(int idrecep , int idpaciente , int estadonuevo)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string request = "api/recepcionista/createpeticionusuario/" + idrecep + "/" + idpaciente + "/" + estadonuevo;
+                string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+                client.BaseAddress = new Uri(this.UrlApiCentro);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = await client.PostAsync(request, null);
+            }
         }
 
 
@@ -535,7 +542,75 @@ namespace ApiCentroMedicoClient.Services
 
 
         // ==================== Metodos Pacientes ==================== //
+        //Metodo para encontrar el medico asignado al paciente.
+        public async Task<MedicoDetallado> GetMedicoPacienteAsync(int idpaciente)
+        {
+            string request = "api/pacientes/getmimedico/"+idpaciente;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            MedicoDetallado medico = await this.CallApiAsync<MedicoDetallado>(request, token);
+            return medico;
+        }
+        //Metodo para obtener el conjunto de citas de un paciente.
+        public async Task<List<CitaDetalladaMedicos>> GetCitasPacienteAsync(int idpaciente)
+        {
+            string request = "api/pacientes/findcitaspaciente/" + idpaciente;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<CitaDetalladaMedicos> citas = await this.CallApiAsync<List<CitaDetalladaMedicos>>(request, token);
+            return citas.OrderByDescending(z => z.Fecha).ToList();
 
+        }
+        //Metodo para crear una cita siendo Paciente.
+        public async Task CreateCitaPacienteAsync(DateTime fecha , TimeSpan hora , int idmedico , int idpaciente)
+        {
+            string request = "api/pacientes/createcitapaciente";
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            Cita cita = new Cita();
+            cita.Fecha = fecha;
+            cita.Hora = hora;
+            cita.Medico = idmedico;
+            cita.Paciente = idpaciente;
+            this.CallPostAsync(request, cita, token);
+        }
+        //Metodo para verificar si una cita esta disponible.
+        public async Task<int> FindCitaDisponible(DateTime fecha, TimeSpan hora, int idmedico)
+        {
+            string request = "api/pacientes/findcitareservada/" + idmedico + "/" + fecha + "/" + hora;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            int disponible = await this.CallApiAsync<int>(request, token);
+            return disponible;
+        }
+        //Metodo para buscar una cita medica de un paciente.
+        public async Task<CitaDetalladaMedicos> FindCitaMedicaPacienteAsync(int idcita)
+        {
+            string request = "api/medicos/findcitadetalladamedico/"+idcita;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            CitaDetalladaMedicos cita = await this.CallApiAsync<CitaDetalladaMedicos>(request, token);
+            return cita;
+        }
+        //Metodo para actualizar una cita
+        
+
+        //Metodo para obtener el conjunto de medicamentos de un paciente.
+        public async Task<List<MedicamentoYPaciente>> GetMedicamentosPacienteAsync(int idpaciente)
+        {
+            string request = "api/pacientes/getmedicamentospaciente/" + idpaciente;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<MedicamentoYPaciente> medicamentos = await this.CallApiAsync<List<MedicamentoYPaciente>>(request, token);
+            return medicamentos;
+        }
+        //Metodo para retirar un medicamento asigando a un paciente.
+        public async Task AceptMedicamentoPacienteAsync(int id)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string request = "api/medicamentos/updatemedicamentoypaciente/"+id;
+                string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+                client.BaseAddress = new Uri(this.UrlApiCentro);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = await client.PutAsync(request, null);
+            }
+        }
 
         // ==================== Metodos Medicos ==================== //
 

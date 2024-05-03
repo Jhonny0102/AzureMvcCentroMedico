@@ -1,8 +1,8 @@
 ﻿<h1 style="text-align:center">Bienvenido @ViewData["NOMBREUSUARIO"]</h1>
 <br />
-<h3 style="text-align:center">
-    <a asp-controller="" asp-action="" class="text-info">¿Quien es mi médico?</a>
-</h3>
+<div class="container text-center">
+    <a asp-controller="CentroMedicoClient" asp-action="PacienteMedicoInformacion" class="text-info">¿Quien es mi médico?</a>
+</div>
 <hr />
 <br />
 <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -13,7 +13,7 @@
                 <h5 class="card-title">Perfil</h5>
                 <p class="card-text">Permite ver la informacion de tu perfil o si quieres poder editarla.</p>
                 <div class="card-footer">
-                    <a asp-controller="" asp-action="" class="btn btn-outline-success">Acceder</a>
+                    <a asp-controller="CentroMedicoClient" asp-action="PacientePerfil" class="btn btn-outline-success">Acceder</a>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
                 <h5 class="card-title">Reservar Cita</h5>
                 <p class="card-text">Permite reservar citas con tu médico.</p>
                 <div class="card-footer">
-                    <a asp-controller="" asp-action="" class="btn btn-outline-success">Acceder</a>
+                    <a asp-controller="CentroMedicoClient" asp-action="PacienteCreateCita" class="btn btn-outline-success">Acceder</a>
                 </div>
             </div>
         </div>
@@ -37,7 +37,7 @@
                 <h5 class="card-title">Historial Citas</h5>
                 <p class="card-text">Permite visualizar todas tus citas pudiendo filtrar por fechas e incluso ver los detalles de tus citas.</p>
                 <div class="card-footer">
-                    <a asp-controller="" asp-action="" class="btn btn-outline-success">Acceder</a>
+                    <a asp-controller="CentroMedicoClient" asp-action="PacienteCitasPaciente" class="btn btn-outline-success">Acceder</a>
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@
                 <h5 class="card-title">Medicamentos</h5>
                 <p class="card-text">Permite ver todos tus medicamentos asignados , ademas puedes retirarlos cuando lo necesites.</p>
                 <div class="card-footer">
-                    <a asp-controller="" asp-action="" class="btn btn-outline-success">Acceder</a>
+                    <a asp-controller="CentroMedicoClient" asp-action="PacienteMedicamentos" class="btn btn-outline-success">Acceder</a>
                 </div>
             </div>
         </div>

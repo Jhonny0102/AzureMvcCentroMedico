@@ -55,5 +55,12 @@ Fecha :02/05/2024
 
 Fecha: 03/05/2024
 1. Terminar zona Paciente.
+	- Perfil , hecho.
+	- Reservar cita(Nos quedamos en ver poque no encuentra una cita para saber si esta disponible)
+	- Historial citas (Nos queda editar,pero se necesita corregir error de crear cita y ver disponibilidad de horario)
+	- Medicamentos , hecho.
 2. Terminar zona Recepcionista.
+	- Perfil , hecho.
+	- Cita rapida , (necesario arreglar crear cita)
+	- peticion usuario , error internal , ver que pasa.
 3. Termiar zona Medico.

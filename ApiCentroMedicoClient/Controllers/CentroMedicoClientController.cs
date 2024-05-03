@@ -4,6 +4,7 @@ using ApiCentroMedicoClient.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ApiCentroMedicoClient.Controllers
 {
@@ -374,6 +375,148 @@ namespace ApiCentroMedicoClient.Controllers
         {
             Paciente paciente = await this.service.FindPacienteCitaRecepcionista(nombre,apellido,correo);
             return View(paciente);
+        }
+
+        [AuthorizeUsers(Policy = "SOLORECEPCIONISTA")]
+        public async Task<IActionResult> RecepcionistaPeticionUsuario()
+        {
+            ViewData["ESTADOS"] = await this.service.GetEstadosAsync();
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> RecepcionistaPeticionUsuario(string nombre, string apellido , string correo , int? idpaciente , int? estadonuevo)
+        {
+            int idrecep = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            Paciente paciente = await this.service.FindPacienteCitaRecepcionista(nombre, apellido, correo);
+            ViewData["ESTADOS"] = await this.service.GetEstadosAsync();
+            if (paciente != null)
+            {
+                if (idrecep != null && idpaciente != null && estadonuevo != null)
+                {
+                    await this.service.PeticionUsuarioAsync(idrecep,idpaciente.Value,estadonuevo.Value);
+                    return RedirectToAction("RecepcionistaPrincipal");
+                }
+                else
+                {
+                    return View(paciente);
+                }
+                
+            }
+            else
+            {
+                ViewData["MENSAJE"] = "Datos erroneos, vuelva a pedir los datos";
+                return View();
+            }
+            
+        }
+
+
+
+
+
+        // ============ Controller Paciente ============ //
+        [AuthorizeUsers(Policy = "SOLOPACIENTE")]
+        public async Task<IActionResult> PacientePerfil()
+        {
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            Paciente paciente = await this.service.FindPacienteAsync(id);
+            return View(paciente);
+        }
+        [HttpPost]
+        public async Task<IActionResult> PacientePerfil(Paciente paciente)
+        {
+            await this.service.UpdatePacienteAsync(paciente.Id,paciente.Nombre,paciente.Apellido,paciente.Correo,paciente.Contra,paciente.Telefono,paciente.Direccion,paciente.Edad,paciente.Genero,paciente.EstadoUsuario,paciente.TipoUsuario);
+            return RedirectToAction("PacientePrincipal");
+        }
+
+        [AuthorizeUsers(Policy = "SOLOPACIENTE")]
+        public async Task<IActionResult> PacienteMedicoInformacion()
+        {
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            MedicoDetallado medico = await this.service.GetMedicoPacienteAsync(id);
+            return View(medico);
+        }
+
+        [AuthorizeUsers(Policy = "SOLOPACIENTE")]
+        public async Task<IActionResult> PacienteCitasPaciente()
+        {
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            MedicoDetallado medico = await this.service.GetMedicoPacienteAsync(id);
+            ViewData["NOMBREMEDICO"] = medico.Nombre + " " + medico.Apellido;
+            List<CitaDetalladaMedicos> citas = await this.service.GetCitasPacienteAsync(id);
+            return View(citas);
+        }
+
+        //Solucionar ******************
+        [AuthorizeUsers(Policy = "SOLOPACIENTE")] /*Descubrimos algo pero nose si es eso, la fecha que pasa es 10/05/2024 en vez de 2024/05/10*/
+        public async Task<IActionResult> PacienteCreateCita()
+        {
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            Usuario paciente = await this.service.FindUsuarioAsync(id);
+            MedicoDetallado medico = await this.service.GetMedicoPacienteAsync(id);
+            ViewData["NOMBREMEDICO"] = medico.Nombre + " " + medico.Apellido;
+            TempData["IDMEDICO"] = medico.Id;
+            return View(paciente);
+        }
+        [HttpPost]
+        public async Task<IActionResult> PacienteCreateCita(int idpaciente, int idmedico , DateTime fecha , TimeSpan hora)
+        {
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            Usuario paciente = await this.service.FindUsuarioAsync(id);
+            MedicoDetallado medico = await this.service.GetMedicoPacienteAsync(id);
+            ViewData["NOMBREMEDICO"] = medico.Nombre + " " + medico.Apellido;
+            TempData["IDMEDICO"] = medico.Id;
+            DateTime hoy = DateTime.Now;
+            if (fecha < hoy)
+            {
+                ViewData["MENSAJE"] = "Has introducido una fecha del pasado";
+                return View(paciente);
+            }
+            else
+            {
+                int dispo = await this.service.FindCitaDisponible(fecha, hora, idmedico);
+                if (dispo == 1)
+                {
+                    ViewData["OTROMENSAJE"] = "Esta Fecha y Hora no esta disponible";
+                    return View(paciente);
+                }
+                else
+                {
+                    await this.service.CreateCitaPacienteAsync(fecha, hora, idmedico, idpaciente);
+                    return RedirectToAction("PacientePrincipal");
+                }
+            }
+        }
+
+        [AuthorizeUsers(Policy = "SOLOPACIENTE")]
+        public async Task<IActionResult> PacienteDetallesCita(int idcita)
+        {
+            CitaDetalladaMedicos cita = await this.service.FindCitaMedicaPacienteAsync(idcita);
+            Usuario user = await this.service.FindUsuarioAsync(cita.IdMedico);
+            ViewData["NOMBREMEDICO"] = user.Nombre + " " + user.Apellido;
+            return View(cita);
+        }
+
+        [AuthorizeUsers(Policy = "SOLOPACIENTE")]
+        public async Task<IActionResult> PacienteDeleteCita(int idcita)
+        {
+            await this.service.DeleteCitaAsync(idcita);
+            return RedirectToAction("PacienteCitasPaciente");
+        }
+
+        [AuthorizeUsers(Policy = "SOLOPACIENTE")]
+        public async Task<IActionResult> PacienteMedicamentos()
+        {
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            List<MedicamentoYPaciente> medicamentos = await this.service.GetMedicamentosPacienteAsync(id);
+            return View(medicamentos);
+        }
+
+        [AuthorizeUsers(Policy = "SOLOPACIENTE")]
+        public async Task<IActionResult> PacienteRetirarMedicamento(int id)
+        {
+            await this.service.AceptMedicamentoPacienteAsync(id);
+            return RedirectToAction("PacienteMedicamentos");
         }
 
     }
