@@ -259,7 +259,7 @@ namespace ApiCentroMedicoClient.Services
         {
             using (HttpClient client = new HttpClient())
             {
-                string request = "api/recepcionista/createpeticionusuario/" + idrecep + "/" + idpaciente + "/" + estadonuevo;
+                string request = "api/recepcionistas/createpeticionusuario/" + idrecep + "/" + idpaciente + "/" + estadonuevo;
                 string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
                 client.BaseAddress = new Uri(this.UrlApiCentro);
                 client.DefaultRequestHeaders.Clear();
@@ -574,10 +574,19 @@ namespace ApiCentroMedicoClient.Services
         //Metodo para verificar si una cita esta disponible.
         public async Task<int> FindCitaDisponible(DateTime fecha, TimeSpan hora, int idmedico)
         {
-            string request = "api/pacientes/findcitareservada/" + idmedico + "/" + fecha + "/" + hora;
+            string request = "api/administrador/getcitasbasica";
             string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
-            int disponible = await this.CallApiAsync<int>(request, token);
-            return disponible;
+            List<Cita> citas = await this.CallApiAsync<List<Cita>>(request, token);
+            Cita cita = citas.FirstOrDefault(z => z.Fecha == fecha && z.Hora == hora && z.Medico == idmedico && z.SeguimientoCita == 3 && z.IdEstado == 1); 
+            if (cita != null)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+            
         }
         //Metodo para buscar una cita medica de un paciente.
         public async Task<CitaDetalladaMedicos> FindCitaMedicaPacienteAsync(int idcita)
@@ -587,7 +596,19 @@ namespace ApiCentroMedicoClient.Services
             CitaDetalladaMedicos cita = await this.CallApiAsync<CitaDetalladaMedicos>(request, token);
             return cita;
         }
-        //Metodo para actualizar una cita
+        //Metodo para actualizar una cita siendo paciente.
+        public async Task UpdateCitaPacienteAsync(int idcita , DateTime fecha , TimeSpan hora)
+        {
+            string request = "api/pacientes/updatecitapaciente";
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            Cita cita = new Cita();
+            cita.Id = idcita;
+            cita.Fecha = fecha;
+            cita.Hora = hora;
+            this.CallPutApiAsync(request, cita, token);
+
+        }
+
         
 
         //Metodo para obtener el conjunto de medicamentos de un paciente.

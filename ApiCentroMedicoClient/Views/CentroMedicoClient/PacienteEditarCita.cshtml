@@ -1,0 +1,70 @@
+﻿@model ApiCentroMedicoClient.Models.CitaDetalladaMedicos
+
+@{
+    ViewData["Title"] = "PacienteEditarCita";
+}
+
+<div class="container text-center">
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <h1 style="margin-right: 10px;">Modificar Cita</h1>
+        <a asp-controller="CentroMedicoClient" asp-action="PacienteCitasPaciente"><img src="~/images/iconoflecha.png" style="width:40px;height:40px;"></a>
+    </div>
+    <hr />
+    <div>
+        <div style="width:60%;margin:auto">
+            <form asp-action="PacienteEditarCita">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <input name="id" class="form-control" value="@Model.Id" hidden />
+                </div>
+                <div class="form-group">
+                    <label> Paciente </label>
+                    <input asp-for="NombrePaciente" class="form-control" placeholder="@Model.NombrePaciente @Model.ApellidoPaciente" />
+                    <span asp-validation-for="NombrePaciente" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label> Medico </label>
+                    <input class="form-control" placeholder="@ViewData["NOMBREMEDICO"]" />
+                    <span asp-validation-for="NombrePaciente" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input name="medico" class="form-control" value="@Model.IdMedico" hidden />
+                </div>
+                <div class="form-group">
+                    <label> Fecha: </label>
+                    <input type="text" class="form-control" placeholder="@Model.Fecha" />
+                </div>
+                <div class="form-group">
+                    <label> Hora  </label>
+                    <input type="text" class="form-control" placeholder="@Model.Hora" />
+                </div>
+                <br />
+                <hr />
+                <br />
+                <h4>Nueva Fecha y Hora</h4>
+                <div class="form-group">
+                    <label>Seleccione Fecha: </label>
+                    <input type="date" name="fecha" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Seleccione Hora: </label>
+                    <input type="time" name="hora" class="form-control" />
+                </div>
+                <br />
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div>
+        <h3 style="color:red">
+            @ViewData["MENSAJE"]
+        </h3>
+    </div>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</div>

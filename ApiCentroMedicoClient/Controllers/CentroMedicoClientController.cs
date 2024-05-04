@@ -351,6 +351,7 @@ namespace ApiCentroMedicoClient.Controllers
 
 
         // ============ Controller Recepcionista ============ //
+
         [AuthorizeUsers(Policy = "SOLORECEPCIONISTA")]
         public async Task<IActionResult> RecepcionistaPerfil()
         {
@@ -371,10 +372,27 @@ namespace ApiCentroMedicoClient.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> RecepcionistaFindPacienteCita(string nombre, string apellido , string correo)
+        public async Task<IActionResult> RecepcionistaFindPacienteCita(string nombre, string apellido , string correo , DateTime? fecha , TimeSpan? hora)
         {
             Paciente paciente = await this.service.FindPacienteCitaRecepcionista(nombre,apellido,correo);
-            return View(paciente);
+            //fecha, hora, idmedico, idpaciente
+            if (paciente != null)
+            {
+                if (fecha != null && hora != null)
+                {
+                    MedicoDetallado medico = await this.service.GetMedicoPacienteAsync(paciente.Id);
+                    await this.service.CreateCitaPacienteAsync(fecha.Value, hora.Value, medico.Id, paciente.Id);
+                    return RedirectToAction("RecepcionistaPrincipal");
+                }
+                else
+                {
+                    return View(paciente);
+                }
+            }
+            else
+            {
+                return View(paciente);
+            }
         }
 
         [AuthorizeUsers(Policy = "SOLORECEPCIONISTA")]
@@ -447,8 +465,7 @@ namespace ApiCentroMedicoClient.Controllers
             return View(citas);
         }
 
-        //Solucionar ******************
-        [AuthorizeUsers(Policy = "SOLOPACIENTE")] /*Descubrimos algo pero nose si es eso, la fecha que pasa es 10/05/2024 en vez de 2024/05/10*/
+        [AuthorizeUsers(Policy = "SOLOPACIENTE")]
         public async Task<IActionResult> PacienteCreateCita()
         {
             int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
@@ -495,6 +512,45 @@ namespace ApiCentroMedicoClient.Controllers
             Usuario user = await this.service.FindUsuarioAsync(cita.IdMedico);
             ViewData["NOMBREMEDICO"] = user.Nombre + " " + user.Apellido;
             return View(cita);
+        }
+
+        [AuthorizeUsers(Policy = "SOLOPACIENTE")]
+        public async Task<IActionResult> PacienteEditarCita(int idcita)
+        {
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            CitaDetalladaMedicos cita = await this.service.FindCitaMedicaPacienteAsync(idcita);
+            MedicoDetallado medico = await this.service.GetMedicoPacienteAsync(id);
+            ViewData["NOMBREMEDICO"] = medico.Nombre + " " + medico.Apellido;
+            return View(cita);
+        }
+        [HttpPost]
+        public async Task<IActionResult> PacienteEditarCita(Cita citamodel)
+        {
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            CitaDetalladaMedicos cita = await this.service.FindCitaMedicaPacienteAsync(citamodel.Id);
+            MedicoDetallado medico = await this.service.GetMedicoPacienteAsync(id);
+            ViewData["NOMBREMEDICO"] = medico.Nombre + " " + medico.Apellido;
+            DateTime hoy = DateTime.Now;
+            if (citamodel.Fecha < hoy)
+            {
+                ViewData["MENSAJE"] = "Has introducido una fecha del pasado";
+                return View(cita);
+            }
+            else
+            {
+                int dispo = await this.service.FindCitaDisponible(citamodel.Fecha, citamodel.Hora, citamodel.Medico);
+                if (dispo == 1)
+                {
+                    ViewData["MENSAJE"] = "Esta Fecha y Hora no esta disponible";
+                    return View(cita);
+                }
+                else
+                {
+                    await this.service.UpdateCitaPacienteAsync(citamodel.Id, citamodel.Fecha, citamodel.Hora);
+                    return RedirectToAction("PacienteCitasPaciente");
+                }
+            }
+
         }
 
         [AuthorizeUsers(Policy = "SOLOPACIENTE")]
