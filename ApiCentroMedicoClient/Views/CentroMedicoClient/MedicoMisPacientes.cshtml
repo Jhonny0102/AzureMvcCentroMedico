@@ -1,0 +1,30 @@
+﻿@model IEnumerable<ApiCentroMedicoClient.Models.MedicosPacientes>
+
+@{
+    ViewData["Title"] = "MedicoMisPacientes";
+}
+
+<div style="display: flex; align-items: center; justify-content: center;">
+    <h1 style="margin-right: 10px;">Pacientes Asignados</h1>
+    <a asp-controller="CentroMedicoClient" asp-action="MedicoPrincipal"><img src="~/images/iconoflecha.png" style="width:40px;height:40px;"></a>
+</div>
+<hr />
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (MedicosPacientes paciente in Model)
+    {
+        <div class="col">
+            <div class="card h-100">
+                <img src="~/images/iconousuario.png" style="width:90px;height90px;margin:auto" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title" style="text-align:center">@paciente.Apellido</h5>
+                    <p class="card-text">Paciente: @paciente.Nombre @paciente.Apellido</p>
+                    <p class="card-text">Correo: @paciente.Correo</p>
+                    <p>
+                        <a asp-controller="CentroMedicoClient" asp-action="MedicoInfoPaciente" asp-route-idpaciente="@paciente.Paciente" class="btn btn-outline-info">Detalles</a>
+                        <a asp-controller="CentroMedicoClient" asp-action="" class="btn btn-outline-success">Citas</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -634,6 +634,22 @@ namespace ApiCentroMedicoClient.Services
         }
 
         // ==================== Metodos Medicos ==================== //
+        //Metodo para buscar un medico detallado.
+        public async Task<MedicoDetallado> FindMedicoDetalladoAsync(int idmedico)
+        {
+            string request = "api/medicos/findmedicodetallado/" + idmedico;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            MedicoDetallado medico = await this.CallApiAsync<MedicoDetallado>(request, token);
+            return medico;
+        }
+        //Metodo para obtener todos los pacientes de un medico.
+        public async Task<List<MedicosPacientes>> GetPacientesMedicoAsync(int idmedico)
+        {
+            string request = "api/medicos/getmispaciente/" + idmedico;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<MedicosPacientes> mispacientes = await this.CallApiAsync<List<MedicosPacientes>>(request, token);
+            return mispacientes;
+        }
 
     }
 }

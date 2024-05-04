@@ -428,10 +428,6 @@ namespace ApiCentroMedicoClient.Controllers
             
         }
 
-
-
-
-
         // ============ Controller Paciente ============ //
         [AuthorizeUsers(Policy = "SOLOPACIENTE")]
         public async Task<IActionResult> PacientePerfil()
@@ -573,6 +569,37 @@ namespace ApiCentroMedicoClient.Controllers
         {
             await this.service.AceptMedicamentoPacienteAsync(id);
             return RedirectToAction("PacienteMedicamentos");
+        }
+
+        // ============ Controller Medico ============ //
+        [AuthorizeUsers(Policy = "SOLOMEDICO")]
+        public async Task<IActionResult> MedicoPerfil()
+        {
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            Medico medico = await this.service.FindMedicoAsync(id);
+            ViewData["ESPECIALIDADES"] = await this.service.GetEspecialidadesAsync();
+            return View(medico);
+        }
+        [HttpPost]
+        public async Task<IActionResult> MedicoPerfil(Medico medico)
+        {
+            await this.service.UpdateMedicoAsync(medico.Id,medico.Nombre,medico.Apellido,medico.Correo,medico.Contra,medico.EstadoUsuario,medico.TipoUsuario,medico.Especialidad);
+            return RedirectToAction("MedicoPrincipal");
+        }
+
+        [AuthorizeUsers(Policy = "SOLOMEDICO")]
+        public async Task<IActionResult> MedicoMisPacientes()
+        {
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            List<MedicosPacientes> mispaciente = await this.service.GetPacientesMedicoAsync(id);
+            return View(mispaciente);
+        }
+
+        [AuthorizeUsers(Policy = "SOLOMEDICO")]
+        public async Task<IActionResult> MedicoInfoPaciente(int idpaciente)
+        {
+            PacienteDetallado paciente = await this.service.GetPacienteDetallado(idpaciente);
+            return View(paciente);
         }
 
     }
