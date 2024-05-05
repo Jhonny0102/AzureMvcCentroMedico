@@ -650,6 +650,28 @@ namespace ApiCentroMedicoClient.Services
             List<MedicosPacientes> mispacientes = await this.CallApiAsync<List<MedicosPacientes>>(request, token);
             return mispacientes;
         }
+        //Metodo para obtener el conjunto de citas de un medico.
+        public async Task<List<CitaDetalladaMedicos>> GetCitasMedicoAsync(int idmedico)
+        {
+            string request = "api/medicos/GetCitasDetalladasMedico/" + idmedico;
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<CitaDetalladaMedicos> citas = await this.CallApiAsync<List<CitaDetalladaMedicos>>(request, token);
+            return citas;
+        }
+        //Metodo para finalizar una cita medica paciente.
+        public async Task FinishCitaMedicaPacienteAsync(int idcita, int idmedico , int idpaciente , string comentario , int seguimiento , List<int> medicamentos)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string request = "api/medicos/updatecitamedica/" + idcita + "/";
+                string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+                client.BaseAddress = new Uri(this.UrlApiCentro);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                HttpResponseMessage response = await client.PutAsync(request, null);
+            }
+        }
+
 
     }
 }

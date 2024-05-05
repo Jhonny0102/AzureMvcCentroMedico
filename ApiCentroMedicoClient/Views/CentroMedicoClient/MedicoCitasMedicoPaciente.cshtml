@@ -1,0 +1,47 @@
+﻿@model List<CitaDetalladaMedicos>
+
+<div>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <h1 style="margin-right: 10px;">Historial Citas Medicas</h1>
+        <a asp-controller="CentroMedicoClient" asp-action="MedicoPrincipal"><img src="~/images/iconoflecha.png" style="width:40px;height:40px;"></a>
+    </div>
+    <br />
+    <hr />
+    <br />
+    <div>
+        <form method="post">
+            <label>Selecciona Fecha: </label>
+            <input type="date" name="fecha" class="form-control" />
+            <br />
+            <button class="btn btn-success">
+                Buscar
+            </button>
+        </form>
+        <br />
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (CitaDetalladaMedicos miscitas in Model)
+            {
+                <div class="col">
+                    <div class="card border-primary mb-3" style="max-width: 18rem;">
+                        <div class="card-header">Fecha: @miscitas.Fecha.ToString("MMMM dd, yyyy") Hora: @miscitas.Hora </div>
+                        <div class="card-body text-dark">
+                            <h5 class="card-title">Paciente: @miscitas.NombrePaciente @miscitas.ApellidoPaciente </h5>
+                            @if (miscitas.IdEstadoCita != 1)
+                            {
+                                <p style="text-align:center">
+                                    <a asp-controller="CentroMedicoClient" asp-action="" asp-route-idcita="@miscitas.Id" class="btn btn-secondary">Finalizado</a>
+                                </p>
+                            }
+                            else
+                            {
+                                <p style="text-align:center">
+                                    <a asp-controller="CentroMedicoClient" asp-action="" asp-route-idcita="@miscitas.Id" class="btn btn-info">Entrar</a>
+                                </p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

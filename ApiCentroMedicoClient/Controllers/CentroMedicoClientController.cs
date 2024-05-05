@@ -602,5 +602,13 @@ namespace ApiCentroMedicoClient.Controllers
             return View(paciente);
         }
 
+        [AuthorizeUsers(Policy = "SOLOMEDICO")]
+        public async Task<IActionResult> MedicoCitasMedicoPaciente()
+        {
+            int id = int.Parse(this.HttpContext.User.FindFirst("ID").Value);
+            List<CitaDetalladaMedicos> citas = await this.service.GetCitasMedicoAsync(id);
+            return View(citas);
+        }
+
     }
 }
