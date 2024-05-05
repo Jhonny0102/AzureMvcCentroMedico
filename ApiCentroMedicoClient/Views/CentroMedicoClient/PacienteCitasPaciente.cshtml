@@ -23,7 +23,7 @@
                         <p class="card-text">Nombre Medico : @ViewData["NOMBREMEDICO"]</p>
                         <p class="card-text">Nombre Paciente: @citas.NombrePaciente @citas.ApellidoPaciente</p>
                         <p>
-                            @if (citas.Fecha < DateTime.Now)
+                            @if (citas.Fecha < DateTime.Now || citas.IdEstadoCita == 2)
                             {
                                 <a asp-controller="CentroMedicoClient" asp-action="PacienteDetallesCita" asp-route-idcita="@citas.Id" class="btn btn-outline-info">Detalles</a>
                             }

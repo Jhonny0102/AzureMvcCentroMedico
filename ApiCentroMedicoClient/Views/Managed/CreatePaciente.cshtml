@@ -5,7 +5,7 @@
 }
 
 <div class="container text-center">
-    <h1>Crear Cuenta Paciente</h1>
+    <h1>Crear Cuenta</h1>
     <p>
         <a asp-controller="Managed" asp-action="Login" class="text-info">¿Ya tienes cuenta? Logueate</a>
     </p>
@@ -55,7 +55,7 @@
                     <span asp-validation-for="Edad" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label>Genero</label>
+                    <label>Género</label>
                     <select name="Genero" class="form-select">
                         <option value="Masculino">Masculino</option>
                         <option value="Femenino">Femenino</option>
@@ -64,7 +64,7 @@
                 </div>
                 <div>
                     <label>
-                        Especialidad Medico
+                        ¿De que especialidad quieres tu médico?
                     </label>
                     <select name="especialidad" class="form-select">
                         @foreach(Especialidades espe in especialidades){
