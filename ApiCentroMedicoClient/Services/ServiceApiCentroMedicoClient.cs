@@ -658,17 +658,47 @@ namespace ApiCentroMedicoClient.Services
             List<CitaDetalladaMedicos> citas = await this.CallApiAsync<List<CitaDetalladaMedicos>>(request, token);
             return citas;
         }
+        //Metodo para transformar una lista de int a una cadena de string.
+        private string TransformCollectionToQuery(List<int> collection)
+        {
+            string result = "";
+            foreach (int elem in collection)
+            {
+                result += "medicamentos=" + elem + "&";
+            }
+            result = result.TrimEnd('&');
+            return result;
+
+        }
+        //Metodo para obtener los medicamentos.
+        public async Task<List<Medicamentos>> GetMedicamentosAsync()
+        {
+            string request = "api/medicamentos/getmedicamentos";
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<Medicamentos> medicamentos = await this.CallApiAsync<List<Medicamentos>>(request, token);
+            return medicamentos.OrderBy(z => z.Nombre).ToList();
+        }
+        //Metodo para obtener todos los estados.
+        public async Task<List<SeguimientoCita>> GetEstadosSeguimientoAsync()
+        {
+            string request = "api/otros/getestadosseguimiento";
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            List<SeguimientoCita> estados= await this.CallApiAsync<List<SeguimientoCita>>(request, token);
+            return estados;
+        }
+
         //Metodo para finalizar una cita medica paciente.
         public async Task FinishCitaMedicaPacienteAsync(int idcita, int idmedico , int idpaciente , string comentario , int seguimiento , List<int> medicamentos)
         {
             using (HttpClient client = new HttpClient())
             {
-                string request = "api/medicos/updatecitamedica/" + idcita + "/";
+                string data = this.TransformCollectionToQuery(medicamentos);
+                string request = "api/medicos/updatecitamedica/" + idmedico + "/" + idpaciente + "/" +idcita + "/" + comentario + "/" +seguimiento;
                 string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
                 client.BaseAddress = new Uri(this.UrlApiCentro);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
-                HttpResponseMessage response = await client.PutAsync(request, null);
+                HttpResponseMessage response = await client.PutAsync(request+"?"+data, null);
             }
         }
 

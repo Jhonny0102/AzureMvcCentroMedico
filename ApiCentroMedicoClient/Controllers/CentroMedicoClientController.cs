@@ -610,5 +610,20 @@ namespace ApiCentroMedicoClient.Controllers
             return View(citas);
         }
 
+        [AuthorizeUsers(Policy = "SOLOMEDICO")]
+        public async Task<IActionResult> MedicoCitaFinal(int idcita)
+        {
+            ViewData["MEDICAMENTOS"] = await this.service.GetMedicamentosAsync();
+            ViewData["ESTADOSEGUIMIENTO"] = await this.service.GetEstadosSeguimientoAsync();
+            CitaDetalladaMedicos cita = await this.service.FindCitaMedicaPacienteAsync(idcita);
+            return View(cita);
+        }
+        [HttpPost]
+        public async Task<IActionResult> MedicoCitaFinal(int idmedico , int idpaciente, int idcita , string comentario , int seguimiento , List<int> medicamentos)
+        {
+            await this.service.FinishCitaMedicaPacienteAsync(idcita,idmedico,idpaciente,comentario,seguimiento,medicamentos);
+            return RedirectToAction("MedicoPrincipal");
+        }
+
     }
 }

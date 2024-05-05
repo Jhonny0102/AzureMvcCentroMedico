@@ -29,13 +29,13 @@
                             @if (miscitas.IdEstadoCita != 1)
                             {
                                 <p style="text-align:center">
-                                    <a asp-controller="CentroMedicoClient" asp-action="" asp-route-idcita="@miscitas.Id" class="btn btn-secondary">Finalizado</a>
+                                    <a asp-controller="CentroMedicoClient" asp-action="MedicoCitaFinal" asp-route-idcita="@miscitas.Id" class="btn btn-secondary">Finalizado</a>
                                 </p>
                             }
                             else
                             {
                                 <p style="text-align:center">
-                                    <a asp-controller="CentroMedicoClient" asp-action="" asp-route-idcita="@miscitas.Id" class="btn btn-info">Entrar</a>
+                                    <a asp-controller="CentroMedicoClient" asp-action="MedicoCitaFinal" asp-route-idcita="@miscitas.Id" class="btn btn-info">Entrar</a>
                                 </p>
                             }
                         </div>

@@ -66,5 +66,5 @@ Fecha: 03/05/2024
 3. Termiar zona Medico.
 	- Perfil, hecho.
 	- Pacientes , hecho (ver si hace falta ver las citas asiganadas al paciente).
-	- Citas 
+	- Citas , hecho (comentario obligatorio).
 	- Peticion medicamento.vi
