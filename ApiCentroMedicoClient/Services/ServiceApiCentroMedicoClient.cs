@@ -27,6 +27,36 @@ namespace ApiCentroMedicoClient.Services
             this.httpContextAccessor = httpContextAccessor;
         }
 
+        //Metodo para enviar Email al paciente.
+        public async Task SendEmailAsync(string email, string mensaje)
+        {
+            string urlLogicApp = "https://prod-205.westeurope.logic.azure.com:443/workflows/76b8f2f46f144844adf0136c01e543ad/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=7lIQOb0cfeMe-W6YUz21_WIXrWBc9PHpEoQe0unHt6A";
+            var model = new
+            {
+                email = email,
+                asunto = "Cita finalizada Medico",
+                mensaje = mensaje
+            };
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.Header);
+                string json = JsonConvert.SerializeObject(model);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PostAsync(urlLogicApp, content);
+            }
+        }
+        //Metodo para convertir los ids de los medicamentos en un string
+        public async Task<string> ConvertToStringIntAsync(List<int> idsmedicamentos)
+        {
+            string data = this.TransformCollectionToQuery(idsmedicamentos);
+            string request = "api/otros/getmensaje";
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            string mensaje = await this.CallApiAsync<string>(request + "?" + data, token);
+            return mensaje;
+        }
+
+
         //Metodo que nos recupera el token.
         public async Task<string> GetTokenAsync(string correo , string contra)
         {

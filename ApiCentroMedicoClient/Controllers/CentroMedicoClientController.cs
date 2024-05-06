@@ -622,7 +622,20 @@ namespace ApiCentroMedicoClient.Controllers
         public async Task<IActionResult> MedicoCitaFinal(int idmedico , int idpaciente, int idcita , string comentario , int seguimiento , List<int> medicamentos)
         {
             await this.service.FinishCitaMedicaPacienteAsync(idcita,idmedico,idpaciente,comentario,seguimiento,medicamentos);
-            return RedirectToAction("MedicoPrincipal");
+            ViewData["MEDICAMENTOS"] = await this.service.GetMedicamentosAsync();
+            ViewData["ESTADOSEGUIMIENTO"] = await this.service.GetEstadosSeguimientoAsync();
+            CitaDetalladaMedicos cita = await this.service.FindCitaMedicaPacienteAsync(idcita);
+            if (medicamentos.Count() != 0)
+            {
+                Usuario paciente = await this.service.FindUsuarioAsync(idpaciente);
+                string mensaje = await this.service.ConvertToStringIntAsync(medicamentos);
+                await this.service.SendEmailAsync(paciente.Correo, mensaje);
+                return RedirectToAction("MedicoPrincipal");
+            }
+            else
+            {
+                return RedirectToAction("MedicoPrincipal");
+            }
         }
 
     }
